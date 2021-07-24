@@ -1,3 +1,22 @@
+sudo git clone https://github.com/SecureAuthCorp/impacket.git /opt/impacket
+sudo pip3 install -r /opt/impacket/requirements.txt
+cd /opt/impacket/ 
+sudo pip3 install .
+sudo python3 setup.py install
+
+apt install bloodhound neo4j
+
+locate GetNPUsers.py
+/usr/share/doc/python3-impacket/examples/GetNPUsers.py
+
+
+
+hashcat -m 7500 -a0 --force -o kerbe.txt /home/gd/Downloads/rockyou.txt
+
 https://floreaiulianpfa.com/attacktive-directory-try-hack-me/
 https://github.com/ropnop/kerbrute/releases/tag/v1.0.3
 https://github.com/TarlogicSecurity/kerbrute
+https://book.hacktricks.xyz/brute-force
+
+https://www.cybersecpadawan.com/2020/04/walkthrough-tryhackme-attacktive.html
+https://arslanblcn.github.io/posts/Tryhackme-Attacktive-Directory/
