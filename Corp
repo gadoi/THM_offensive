@@ -126,6 +126,13 @@ tqjJpEX9Qv8ybKI3yHcc=L!5e(!wW;$T
 
 
 
+- Now we have the Administrator's password, login as them and obtain the last flag.
+hint: remote desktop to target
+---> change password
+notepad c:\users\administrator\flag.txt
+THM{g00d_j0b_SYS4DM1n_M4s73R}
+
+
 https://www.aldeid.com/wiki/TryHackMe-Corp
 https://cd6629.gitbook.io/ctfwriteups/windows-privesc/corp-w-wlk
 https://executeatwill.com/2020/04/20/TryHackMe-Corp-Walkthrough/
